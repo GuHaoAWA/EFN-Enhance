@@ -29,7 +29,7 @@
       "lifetime": 8,
       "interpolations": 20,
       "color": [255,255,255],
-      "texture_path": "efn:textures/trail/thunder_trail_1.png",
+      "texture_path": "efn_enhance:textures/trail/thunder_trail_1.png",
       "particle_type": "fancy_trail:bloom_trail"
     },
     {
@@ -42,7 +42,7 @@
       "lifetime": 16,
       "interpolations": 20,
       "color": [255,255,255],
-      "texture_path": "efn:textures/trail/fsgr2.png"
+      "texture_path": "efn_enhance:textures/trail/fsgr2.png"
     },
     {
       "start_time": 0.53,
@@ -54,7 +54,7 @@
       "lifetime": 16,
       "interpolations": 20,
       "color": [255,255,255],
-      "texture_path": "efn:textures/trail/fsgr2.png"
+      "texture_path": "efn_enhance:textures/trail/fsgr2.png"
     },
     {
       "start_time": 1.0,
@@ -66,7 +66,7 @@
       "lifetime": 8,
       "interpolations": 30,
       "color": [255,255,255],
-      "texture_path": "efn:textures/trail/thunder_trail_3.png",
+      "texture_path": "efn_enhance:textures/trail/thunder_trail_3.png",
       "particle_type": "fancy_trail:bloom_trail"
     },
     {
@@ -79,7 +79,7 @@
       "lifetime": 16,
       "interpolations": 20,
       "color": [255,255,255],
-      "texture_path": "efn:textures/trail/end_trail.png"
+      "texture_path": "efn_enhance:textures/trail/end_trail.png"
     },
     {
       "start_time": 0.53,
@@ -91,7 +91,7 @@
       "lifetime": 16,
       "interpolations": 20,
       "color": [255,255,255],
-      "texture_path": "efn:textures/trail/end_trail.png"
+      "texture_path": "efn_enhance:textures/trail/end_trail.png"
     },
     {
       "start_time": 1.0,
@@ -103,7 +103,7 @@
       "lifetime": 10,
       "interpolations": 30,
       "color": [255,255,255],
-      "texture_path": "efn:textures/trail/thunder_trail_2.png",
+      "texture_path": "efn_enhance:textures/trail/thunder_trail_2.png",
       "particle_type": "fancy_trail:bloom_trail"
     },
     {
@@ -116,7 +116,7 @@
       "lifetime": 12,
       "interpolations": 20,
       "color": [255,255,255],
-      "texture_path": "efn:textures/trail/thunder_trail_4.png",
+      "texture_path": "efn_enhance:textures/trail/thunder_trail_4.png",
       "particle_type": "fancy_trail:bloom_trail"
     }
   ]

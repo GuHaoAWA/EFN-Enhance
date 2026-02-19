@@ -1,14 +1,23 @@
 package com.guhao.efn_enhance;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.PathPackResources;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
+
+import java.nio.file.Path;
 
 
 @Mod(EFN_E.MODID)
@@ -20,13 +29,26 @@ public class EFN_E
     {
         IEventBus modEventBus = context.getModEventBus();
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::addPackFindersEvent);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
 
     }
+    public void addPackFindersEvent(AddPackFindersEvent event) {
+        if (event.getPackType() == PackType.CLIENT_RESOURCES) {
+            Path resourcePath = ModList.get().getModFileById(EFN_E.MODID).getFile().findResource("packs/efn_enhance_must");
+            PathPackResources pack = new PathPackResources(ModList.get().getModFileById(EFN_E.MODID).getFile().getFileName() + ":" + resourcePath, resourcePath, false);
+            Pack.ResourcesSupplier resourcesSupplier = (string) -> pack;
+            Pack.Info info = Pack.readPackInfo("efn_enhance_must", resourcesSupplier);
 
+            if (info != null) {
+                event.addRepositorySource((source) ->
+                        source.accept(Pack.create("efn_enhance_must", Component.translatable("pack.efn_enhance_must.title"), true, resourcesSupplier, info, PackType.CLIENT_RESOURCES, Pack.Position.TOP, false, PackSource.BUILT_IN)));
+            }
+        }
+    }
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents
     {

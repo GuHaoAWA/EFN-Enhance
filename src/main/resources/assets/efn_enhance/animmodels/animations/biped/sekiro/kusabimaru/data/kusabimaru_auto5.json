@@ -15,7 +15,7 @@
             "lifetime": 18,
             "interpolations": 12,
             "color": [90,90,90],
-            "texture_path": "efn:textures/trail/end_trail.png"
+            "texture_path": "efn_enhance:textures/trail/end_trail.png"
         },
         {
             "start_time": 0.15,
@@ -28,7 +28,7 @@
             "lifetime": 18,
             "interpolations": 12,
             "color": [90,90,90],
-            "texture_path": "efn:textures/trail/end_trail.png"
+            "texture_path": "efn_enhance:textures/trail/end_trail.png"
         }
     ]
 }

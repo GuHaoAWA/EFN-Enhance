@@ -20,7 +20,7 @@
             "lifetime": 20,
             "interpolations": 20,
             "color": [255,255,255],
-            "texture_path": "efn:textures/trail/end_trail.png"
+            "texture_path": "efn_enhance:textures/trail/end_trail.png"
         }
     ]
 }

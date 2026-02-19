@@ -1,0 +1,26 @@
+{
+  "renderer": "efn:mesh_item_mortalblade",
+
+  "mesh1_texture": "efn:textures/item/weapon/kusabimaru.png",
+  "mesh1_texture_l": "efn:textures/item/weapon/kusabimaru_l.png",
+  "mesh1_main": "efn:weapon/kusabimaru",
+  "mesh1_off": "efn:weapon/kusabimaru",
+  "mesh1_sheath": "efn:weapon/kusabimaru_sheath",
+
+  "mesh2_texture": "efn:textures/item/weapon/kusabimaru.png",
+  "mesh2_texture_l": "efn:textures/item/weapon/kusabimaru_l.png",
+  "mesh2_main": "efn:weapon/kusabimaru_fushigiri",
+  "mesh2_off": "efn:weapon/kusabimaru_fushigiri",
+  "mesh2_sheath": "efn:weapon/kusabimaru_fushigiri_sheath",
+
+  "trail": {
+  "color": [255,255,255],
+    "begin_pos": [0.0, 0.0, 0.0],
+    "end_pos": [0.0, 0.0, -2.7],
+    "lifetime": 6,
+    "interpolations": 8,
+    "texture_path": "efn:textures/trail/fsgr1.png",
+    "particle_type": "efn:bloom_trail"
+  },
+  "appeared_in_afterimage":false
+}

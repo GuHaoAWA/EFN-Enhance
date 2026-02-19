@@ -18,7 +18,7 @@
 			"item_skin_hand": "main_hand",
 			"lifetime": 10,
 			"interpolations": 6,
-			"texture_path": "efn:textures/trail/end_trail.png"
+			"texture_path": "efn_enhance:textures/trail/end_trail.png"
 		}
 	]
 }
