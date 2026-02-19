@@ -126,9 +126,9 @@ dependencies {
     implementation fg.deobf("curse.maven:rendi-1060231:5515603")
     implementation fg.deobf("curse.maven:free-cam-557076:4643128")
     implementation fg.deobf("curse.maven:flerovium-1142875:7068908")
-
+    implementation fg.deobf("curse.maven:fancy-trail-1380365:7248829")
     implementation fg.deobf('libs:Nightfall-3.0.3-all:3.0.3')
-    implementation "curse.maven:fancy-trail-1380365:7248829"
+
 
     compileOnly(annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-common:0.2.0-beta.6"))
     implementation(jarJar("com.bawnorton.mixinsquared:mixinsquared-forge:0.2.0-beta.6")) {
