@@ -1,0 +1,217 @@
+buildscript {
+    repositories {
+        maven { url 'https://repo.spongepowered.org/maven' }
+    }
+}
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
+}
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = mod_name
+}
+
+// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
+minecraft {
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    mappings channel: mapping_channel, version: mapping_version
+    copyIdeResources = true
+    runs {
+        configureEach {
+            workingDirectory project.file('run')
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
+            arg "-mixin.config=" + "${mod_id}" + ".mixins.json"
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                }
+            }
+
+            jvmArgs '-Xms8G'
+        }
+
+        client {
+            property 'forge.enabledGameTestNamespaces', mod_id
+        }
+
+        server {
+            property 'forge.enabledGameTestNamespaces', mod_id
+            args '--nogui'
+        }
+        gameTestServer {
+            property 'forge.enabledGameTestNamespaces', mod_id
+        }
+
+        data {
+            workingDirectory project.file('run-data')
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+        }
+    }
+}
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://repo.spongepowered.org/repository/maven-public/"
+    }
+    flatDir {
+        dir 'libs'
+    }
+    maven { url = "https://maven.bawnorton.com/releases" }
+    maven { url = 'https://maven.fallenbreath.me/releases' }
+
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+}
+
+reobf {
+    jarJar {}
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:1.20.1-47.4.0"
+
+    jarJar fg.deobf("curse.maven:geckolib-388172:7025129") {
+        transitive = false
+        jarJar.ranged(it, "[4.8.2,)")
+    }
+
+    //前置
+    implementation fg.deobf("curse.maven:epic-fight-mod-405076:7617763")
+    implementation fg.deobf("curse.maven:epic-fight-invincible-1184379:7445318")
+    implementation fg.deobf("curse.maven:epic-fight-avalon-1268823:7415398")
+    implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
+    implementation fg.deobf("curse.maven:aaa-particles-979809:6616719")
+    implementation fg.deobf("curse.maven:epic-fight-skill-tree-1295882:7129232")
+    implementation fg.deobf("curse.maven:geckolib-388172:7025129")
+    implementation fg.deobf("curse.maven:geckolibbetterfps-1455983:7609709")
+//
+//    implementation fg.deobf("curse.maven:weapons-of-miracles-epicfight-918614:7477498")
+//    implementation fg.deobf("curse.maven:epic-fight-dodge-parry-reward-1304607:7037790")
+//    implementation fg.deobf("curse.maven:lendercataclysm-551586:6906993")
+//    implementation fg.deobf("curse.maven:smart-key-prompts-1300195:7086672")
+//    implementation fg.deobf("curse.maven:oelib-1319210:7060455")
+//
+//    implementation fg.deobf("curse.maven:just-enough-effect-descriptions-jeed-532286:6172935")
+    implementation fg.deobf("curse.maven:embeddium-908741:5556138")
+    implementation fg.deobf("curse.maven:oculus-581495:5299671")
+    implementation fg.deobf("curse.maven:configured-457570:5180900")
+//    implementation fg.deobf("curse.maven:citadel-331936:6702068")
+//    implementation fg.deobf("curse.maven:curios-309927:6418456")
+//    implementation fg.deobf("curse.maven:lionfish-api-1001614:5922047")
+/*
+    implementation fg.deobf("curse.maven:chloride-931925:6615986")
+*/
+    implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:6860192")
+    implementation fg.deobf("curse.maven:selene-499980:7072721")
+    implementation fg.deobf("curse.maven:jei-238222:6600311")
+    implementation fg.deobf("curse.maven:rendi-1060231:5515603")
+    implementation fg.deobf("curse.maven:free-cam-557076:4643128")
+    implementation fg.deobf("curse.maven:flerovium-1142875:7068908")
+
+    implementation fg.deobf('libs:Nightfall-3.0.3-all:3.0.3')
+    implementation "curse.maven:fancy-trail-1380365:7248829"
+
+    compileOnly(annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-common:0.2.0-beta.6"))
+    implementation(jarJar("com.bawnorton.mixinsquared:mixinsquared-forge:0.2.0-beta.6")) {
+        jarJar.ranged(it, "[0.2.0-beta.6,)")
+    }
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
+    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.4.1")) {
+        jarJar.ranged(it, "[0.4.1,)")
+    }
+
+    implementation 'me.fallenbreath:conditional-mixin-forge:0.6.4'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    var replaceProperties = [
+            minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
+            forge_version: forge_version, forge_version_range: forge_version_range,
+            loader_version_range: loader_version_range,
+            mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+            mod_authors: mod_authors, mod_description: mod_description,
+    ]
+    inputs.properties replaceProperties
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
+    }
+}
+
+tasks.named('build').configure {
+    dependsOn tasks.named('jarJar')
+    dependsOn tasks.named('reobfJarJar')
+}
+
+tasks.named('jar', Jar).configure {
+    manifest {
+        attributes([
+                'Specification-Title'     : mod_id,
+                'Specification-Vendor'    : mod_authors,
+                'Specification-Version'   : '1',
+                'Implementation-Title'    : project.name,
+                'Implementation-Version'  : project.jar.archiveVersion,
+                'Implementation-Vendor'   : mod_authors,
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs"            : "${mod_id}" + ".mixins.json"
+        ])
+    }
+    finalizedBy 'reobfJar'
+}
+
+tasks.named('jarJar').configure {
+    manifest {
+        attributes([
+                'Specification-Title'     : mod_id,
+                'Specification-Vendor'    : mod_authors,
+                'Specification-Version'   : '1',
+                'Implementation-Title'    : project.name,
+                'Implementation-Version'  : project.jar.archiveVersion,
+                'Implementation-Vendor'   : mod_authors,
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs"            : "${mod_id}" + ".mixins.json"
+        ])
+    }
+    finalizedBy 'reobfJarJar'
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/mcmodsrepo"
+        }
+    }
+};
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+mixin {
+    add sourceSets.main, "${mod_id}" + '.mixin-refmap.json'
+    config "${mod_id}" + '.mixins.json'
+}
