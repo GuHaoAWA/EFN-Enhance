@@ -2,10 +2,7 @@ package com.guhao.efn_enhance.entity.fakeman;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.guhao.efn_enhance.gameassets.animations.EFN_ESekiroAnimations;
 import com.hm.efn.EFN;
-import com.hm.efn.gameasset.EFNWeaponCategories;
-import com.hm.efn.gameasset.animations.EFNYamatoAnimations;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -13,7 +10,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import org.jetbrains.annotations.Nullable;
@@ -22,6 +18,7 @@ import yesman.epicfight.api.animation.Animator;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.utils.AttackResult;
+import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.Factions;
 import yesman.epicfight.world.capabilities.entitypatch.HumanoidMobPatch;
@@ -53,7 +50,7 @@ public class FakeManPatch extends HumanoidMobPatch<FakeManEntity> {
     protected void setWeaponMotions() {
         super.setWeaponMotions();
         this.weaponLivingMotions = Maps.newHashMap();
-        this.weaponLivingMotions.put(EFNWeaponCategories.EFN_YAMATO, ImmutableMap.of(CapabilityItem.Styles.TWO_HAND, Set.of(Pair.of(LivingMotions.WALK, EFNYamatoAnimations.YAMATO_WALK), Pair.of(LivingMotions.CHASE, EFNYamatoAnimations.YAMATO_RUN), Pair.of(LivingMotions.IDLE, EFNYamatoAnimations.YAMATO_IDLE), Pair.of(LivingMotions.RUN, EFNYamatoAnimations.YAMATO_RUN))));
+        this.weaponLivingMotions.put(CapabilityItem.WeaponCategories.UCHIGATANA, ImmutableMap.of(CapabilityItem.Styles.TWO_HAND, Set.of(Pair.of(LivingMotions.WALK, Animations.BIPED_WALK_UCHIGATANA), Pair.of(LivingMotions.CHASE, Animations.BIPED_RUN_UCHIGATANA), Pair.of(LivingMotions.IDLE, Animations.BIPED_IDLE), Pair.of(LivingMotions.RUN, Animations.BIPED_RUN_UCHIGATANA))));
     }
 
     @Override
