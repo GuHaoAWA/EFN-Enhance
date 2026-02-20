@@ -1,0 +1,9 @@
+{
+    "bazley":
+    {
+        "category":"entity",
+        "subtitle":"bazley",
+        "sounds":[{"name":"efn_enhance:bazley","stream":false}
+        ]
+    }
+}

@@ -1,5 +1,6 @@
 package com.guhao.efn_enhance;
 
+import com.guhao.efn_enhance.register.EFNESounds;
 import com.mojang.logging.LogUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
@@ -30,6 +31,7 @@ public class EFN_E
         IEventBus modEventBus = context.getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::addPackFindersEvent);
+        EFNESounds.EFNESound.register(modEventBus);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)
