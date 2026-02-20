@@ -5,6 +5,7 @@ import com.guhao.efn_enhance.client.effek.MortalBladeEffek;
 import com.guhao.efn_enhance.client.effek.RedDragonFlashEffek;
 import com.guhao.efn_enhance.client.effek.RedDragonFlashFinish1Effek;
 import com.guhao.efn_enhance.client.effek.RedDragonFlashFinish2Effek;
+import com.guhao.efn_enhance.entity.fakeman.FakeManEntity;
 import com.guhao.efn_enhance.register.EFNESounds;
 import com.hm.efn.EFNClientConfig;
 import com.hm.efn.animations.types.sekiro.SekiroArtsAnimation;
@@ -45,6 +46,8 @@ import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.particle.EpicFightParticles;
+import yesman.epicfight.world.capabilities.EpicFightCapabilities;
+import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.EpicFightDamageTypeTags;
 import yesman.epicfight.world.damagesource.ExtraDamageInstance;
 import yesman.epicfight.world.damagesource.StunType;
@@ -59,6 +62,7 @@ import static com.merlin204.avalon.util.AvalonAnimationUtils.createSimplePhase;
 @Mod.EventBusSubscriber(modid = EFN_E.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EFN_ESekiroAnimations {
     public static final Collider ROOT = new MultiOBBCollider(2, 4, 4, 4, 0.0, 0, 0.0);
+    public static final Collider MORTAL_BLADE2 = new MultiOBBCollider(3, 1.5, 14.0, 1.5, 0.0, 14.0, 0.0);
 
     public static AnimationManager.AnimationAccessor<StaticAnimation> KUSABIMARU_IDLE;
     public static AnimationManager.AnimationAccessor<MovementAnimation> KUSABIMARU_WALK;
@@ -451,6 +455,10 @@ public class EFN_ESekiroAnimations {
                                 AvalonEventUtils.simpleSound(115, EFNSounds.MORTAL_BLADE_BLOODWHOOSH.get(), 1.3F, 1),
                                 localPlaySound(24, EFNSounds.MORTAL_BLADE_SWORD_IN.get(), 1.2F),
                                 AvalonEventUtils.simpleCameraShake(124, 20, 4, 2, 16),
+                                AnimationEvent.InTimeEvent.create(0.0001F, (entityPatch, self, params) -> {
+                                    ServerPlayerPatch serverPlayerPatch = EpicFightCapabilities.getEntityPatch(entityPatch.getOriginal(), ServerPlayerPatch.class);
+                                    if (serverPlayerPatch != null) FakeManEntity.summon(serverPlayerPatch);
+                                }, AnimationEvent.Side.SERVER),
                                 AnimationEvent.InTimeEvent.create(0.1F, (entityPatch, self, params) -> {
                                     entityPatch.getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 10, false, false, false));
                                 }, AnimationEvent.Side.SERVER),
@@ -556,7 +564,7 @@ public class EFN_ESekiroAnimations {
                         .addProperty(AnimationProperty.AttackPhaseProperty.SOURCE_TAG, Set.of(EpicFightDamageTypeTags.WEAPON_INNATE, EpicFightDamageTypeTags.FINISHER, EpicFightDamageTypeTags.GUARD_PUNCTURE))
                         .addProperty(AnimationProperty.AttackPhaseProperty.EXTRA_DAMAGE, Set.of(EFNExtraDamageInstance.MAX_HEALTH_PERCENTAGE_DAMAGE.create(0.025F, 50.0f, 200.0f), EFNExtraDamageInstance.EXTRA_DAMAGE.create(30), ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
                         .addProperty(AnimationProperty.AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
-                        , createSimplePhase(204, 228, 245, InteractionHand.MAIN_HAND, 2F, 3F, mortalBlade, MORTAL_BLADE))
+                        , createSimplePhase(204, 228, 245, InteractionHand.MAIN_HAND, 2F, 3F, mortalBlade, MORTAL_BLADE2))
                         .addProperty(AnimationProperty.AttackPhaseProperty.HIT_SOUND, EpicFightSounds.EVISCERATE.get())
                         .addProperty(AnimationProperty.AttackPhaseProperty.PARTICLE, EpicFightParticles.EVISCERATE)
                         .addProperty(AnimationProperty.AttackPhaseProperty.SWING_SOUND, EFNSounds.NOSOUND.get())
