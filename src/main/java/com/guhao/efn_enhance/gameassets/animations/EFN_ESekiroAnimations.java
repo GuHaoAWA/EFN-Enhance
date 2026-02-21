@@ -1,10 +1,12 @@
 package com.guhao.efn_enhance.gameassets.animations;
 
 import com.guhao.efn_enhance.EFN_E;
+import com.guhao.efn_enhance.client.ClientModBusEvent;
 import com.guhao.efn_enhance.client.effek.MortalBladeEffek;
 import com.guhao.efn_enhance.client.effek.RedDragonFlashEffek;
 import com.guhao.efn_enhance.client.effek.RedDragonFlashFinish1Effek;
 import com.guhao.efn_enhance.client.effek.RedDragonFlashFinish2Effek;
+import com.guhao.efn_enhance.client.particles.EFNEParticles;
 import com.guhao.efn_enhance.entity.fakeman.FakeManEntity;
 import com.guhao.efn_enhance.register.EFNESounds;
 import com.hm.efn.EFNClientConfig;
@@ -400,6 +402,8 @@ public class EFN_ESekiroAnimations {
                                 .addProperty(AnimationProperty.AttackPhaseProperty.SWING_SOUND, EFNSounds.MORTAL_BLADE_BLOODWHOOSH.get())
                                 .addProperty(AnimationProperty.AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER.get()),
                         new AttackAnimation.Phase(100 / 90F, 100 / 90F, 113 / 90F, 150 / 90F, 227 / 90F, Slash, SAKURA_DANCE_COLL)
+                                .addProperty(AnimationProperty.AttackPhaseProperty.SOURCE_TAG, Set.of(EpicFightDamageTypeTags.WEAPON_INNATE, EpicFightDamageTypeTags.FINISHER, EpicFightDamageTypeTags.GUARD_PUNCTURE))
+                                .addProperty(AnimationProperty.AttackPhaseProperty.PARTICLE, EFNEParticles.SPARK_HIT)
                                 .addProperty(AnimationProperty.AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
                                 .addProperty(AnimationProperty.AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(3.0F))
                                 .addProperty(AnimationProperty.AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(3.0F))

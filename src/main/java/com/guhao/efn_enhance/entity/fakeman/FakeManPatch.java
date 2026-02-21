@@ -20,6 +20,7 @@ import yesman.epicfight.api.animation.Animator;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.utils.AttackResult;
+import yesman.epicfight.gameasset.MobCombatBehaviors;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.Factions;
 import yesman.epicfight.world.capabilities.entitypatch.HumanoidMobPatch;
@@ -50,6 +51,7 @@ public class FakeManPatch extends HumanoidMobPatch<FakeManEntity> {
     @Override
     protected void setWeaponMotions() {
         super.setWeaponMotions();
+//        this.weaponAttackMotions.put(CapabilityItem.WeaponCategories.UCHIGATANA, ImmutableMap.of(CapabilityItem.Styles.TWO_HAND, MobCombatBehaviors.HUMANOID_KATANA));
         this.weaponLivingMotions = Maps.newHashMap();
         this.weaponLivingMotions.put(CapabilityItem.WeaponCategories.UCHIGATANA,
                 ImmutableMap.of(CapabilityItem.Styles.TWO_HAND, Set.of(
