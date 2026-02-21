@@ -60,7 +60,7 @@ public class FakeManRender extends HumanoidMobRenderer<FakeManEntity, HumanoidMo
 
     @Override
     public boolean shouldRender(FakeManEntity pLivingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ) {
-        return false;
+        return true;
     }
 
 }

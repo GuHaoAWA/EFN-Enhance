@@ -2,6 +2,8 @@ package com.guhao.efn_enhance.entity.fakeman;
 
 import com.guhao.efn_enhance.gameassets.animations.EFN_ESekiroAnimations;
 import com.guhao.efn_enhance.register.EFNEEntity;
+import com.hm.efn.entity.doppelganger.DoppelgangerPatch;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -98,20 +100,30 @@ public class FakeManEntity extends TamableAnimal {
     public void tick() {
 
         super.tick();
+
         if (this.getOwner() == null || !this.getOwner().isAlive() || this.getOwner().getHealth() <= 0 || tickCount >= 100) {
             this.remove(RemovalReason.DISCARDED);
             return;
         }
-
-
+        LivingEntity owner = getOwner();
         this.setNoAi(true);
+        FakeManPatch fakeManPatch = EpicFightCapabilities.getEntityPatch(this, FakeManPatch.class);
+        assert fakeManPatch != null;
         if (tickCount == 1) {
-            FakeManPatch fakeManPatch = EpicFightCapabilities.getEntityPatch(this, FakeManPatch.class);
-            assert fakeManPatch != null;
-            fakeManPatch.playAnimationSynchronized(EFN_ESekiroAnimations.FAKE_OPEN_MORTAL_BLADE_2,0.0f);
+            fakeManPatch.playAnimationSynchronized(EFN_ESekiroAnimations.FAKE_OPEN_MORTAL_BLADE_2,-0.2f);
         }
 
-
+        if (!fakeManPatch.getEntityState().turningLocked()) {
+            this.xRotO = owner.xRotO;
+            this.yRotO = owner.yRotO;
+            this.setYRot(owner.getYRot());
+            this.setXRot(owner.getXRot());
+            this.setYHeadRot(owner.getYHeadRot());
+            this.yBodyRot = owner.yBodyRot;
+        } else {
+            if (fakeManPatch.getTarget() != null)
+                fakeManPatch.getOriginal().lookAt(EntityAnchorArgument.Anchor.EYES, new Vec3(fakeManPatch.getTarget().getX(), fakeManPatch.getTarget().getEyeY() + 0.1, fakeManPatch.getTarget().getZ()));
+        }
 
     }
 

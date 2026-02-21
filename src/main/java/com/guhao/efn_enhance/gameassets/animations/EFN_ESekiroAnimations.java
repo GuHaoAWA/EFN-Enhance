@@ -1,13 +1,14 @@
 package com.guhao.efn_enhance.gameassets.animations;
 
 import com.guhao.efn_enhance.EFN_E;
-import com.guhao.efn_enhance.client.ClientModBusEvent;
 import com.guhao.efn_enhance.client.effek.MortalBladeEffek;
 import com.guhao.efn_enhance.client.effek.RedDragonFlashEffek;
 import com.guhao.efn_enhance.client.effek.RedDragonFlashFinish1Effek;
 import com.guhao.efn_enhance.client.effek.RedDragonFlashFinish2Effek;
 import com.guhao.efn_enhance.client.particles.EFNEParticles;
+import com.guhao.efn_enhance.effects.SparkBaEffek;
 import com.guhao.efn_enhance.entity.fakeman.FakeManEntity;
+import com.guhao.efn_enhance.register.EFNEEffects;
 import com.guhao.efn_enhance.register.EFNESounds;
 import com.hm.efn.EFNClientConfig;
 import com.hm.efn.animations.types.sekiro.SekiroArtsAnimation;
@@ -24,8 +25,10 @@ import com.merlin204.avalon.util.AvalonAnimationUtils;
 import com.merlin204.avalon.util.AvalonEventUtils;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -43,19 +46,20 @@ import yesman.epicfight.api.collider.MultiOBBCollider;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.AttackResult;
 import yesman.epicfight.api.utils.TimePairList;
+import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.ValueModifier;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
+import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.EpicFightDamageTypeTags;
 import yesman.epicfight.world.damagesource.ExtraDamageInstance;
 import yesman.epicfight.world.damagesource.StunType;
 
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import static com.hm.efn.gameasset.animations.EFNSekiroAnimations.*;
 import static com.merlin204.avalon.util.AvalonAnimationUtils.createSimplePhase;
@@ -64,7 +68,8 @@ import static com.merlin204.avalon.util.AvalonAnimationUtils.createSimplePhase;
 @Mod.EventBusSubscriber(modid = EFN_E.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EFN_ESekiroAnimations {
     public static final Collider ROOT = new MultiOBBCollider(2, 4, 4, 4, 0.0, 0, 0.0);
-    public static final Collider MORTAL_BLADE2 = new MultiOBBCollider(3, 1.5, 14.0, 1.5, 0.0, 14.0, 0.0);
+    public static final Collider MORTAL_BLADE2 = new MultiOBBCollider(3, 1.5, 7, 1.5, 0.0, 21, 0.0);
+    public static final Collider SAKURA_DANCE_COLL = new MultiOBBCollider(3, 1.0, 3.0, 1.0, 0.0, 3.0, 0.0);
 
     public static AnimationManager.AnimationAccessor<StaticAnimation> KUSABIMARU_IDLE;
     public static AnimationManager.AnimationAccessor<MovementAnimation> KUSABIMARU_WALK;
@@ -155,7 +160,6 @@ public class EFN_ESekiroAnimations {
                 );
         DRAGON_FLASH =
                 builder.nextAccessor("biped/sekiro/kusabimaru/dragon_flash", accessor -> new SekiroAttackAnimation(0.1F, accessor, Sekiro, 1F, 1
-                        , createSimplePhase(96, 107, 150, InteractionHand.MAIN_HAND, 4F, 1.5F, Slash, null)
                         , createSimplePhase(96, 107, 150, InteractionHand.MAIN_HAND, 4F, 1.5F, Root , ROOT))
                         .addProperty(AnimationProperty.AttackPhaseProperty.SWING_SOUND, EFNSounds.MORTAL_BLADE_WHOOSH.get())
                         .addProperty(AnimationProperty.AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER.get())
@@ -170,6 +174,12 @@ public class EFN_ESekiroAnimations {
                                     }
                                     MortalBladeEffek.playMortalBlade(MortalBladeEffek.Type.LEVEL3,entityPatch.getOriginal().level,entityPatch.getOriginal().getX(),entityPatch.getOriginal().getY(),entityPatch.getOriginal().getZ(),1.2f);
                                 }, AnimationEvent.Side.CLIENT),
+                                        mortalBladeParticleTrail(96, 107,
+                                                new Vec3(-0.6, 6, 0F),
+                                                new Vec3(-0.6, 7, 0F),
+                                                25, 12,
+                                                EFNParticles.MORTAL_BLADE.get(),
+                                                0.35F),
                                 AnimationEvent.InTimeEvent.create(0.65F, (entityPatch, self, params) -> {
                                     if (!EffekUnits.VFXENABLE()) {
                                         return;
@@ -414,12 +424,31 @@ public class EFN_ESekiroAnimations {
                         .addProperty(AnimationProperty.AttackAnimationProperty.EXTRA_COLLIDERS, 5)
                         .addProperty(AnimationProperty.AttackAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0, 150F / 90F))
                         .addEvents(
+                                AnimationEvent.InTimeEvent.create(65/90F,(ep,b,c) -> {
+                                    SparkBaEffek.playSparkBa(SparkBaEffek.Type.LEVEL1,ep.getOriginal().level,ep.getOriginal().getX(),ep.getOriginal().getY() + 0.25,ep.getOriginal().getZ(),1.0f);
+                                }, AnimationEvent.Side.CLIENT),
+                                AnimationEvent.InPeriodEvent.create(70 / 90F, 113 / 90F,(ep,b,c) -> {
+                                    List<LivingEntity> hitEntities = ep.getCurrentlyActuallyHitEntities();
+                                    if (hitEntities != null && !hitEntities.isEmpty()) {
+                                        for (LivingEntity hitEntity : hitEntities) {
+                                            hitEntity.addEffect(new MobEffectInstance(EFNEEffects.THUNDER.get(),55,1));
+                                        }
+                                    }
+                                }, AnimationEvent.Side.SERVER),
+                                AnimationEvent.InPeriodEvent.create(90 / 90F, 113 / 90F,(ep,b,c) -> {
+                                    doThunderSparkEffect(ep.getOriginal());
+                                    doThunderSliceEffect(ep.getOriginal());
+                                }, AnimationEvent.Side.CLIENT),
+                                serverPlaySound(66,SoundEvents.LIGHTNING_BOLT_THUNDER, 3.0F),
                                 mortalBladeParticleTrail(5, 45,
                                         new Vec3(-0.6, 6, 0F),
                                         new Vec3(-0.6, 7, 0F),
-                                        50, 15,
+                                        10, 9,
                                         EFNParticles.MORTAL_BLADE.get(),
-                                        0.35F))
+                                        0.35F)
+//                                AvalonEventUtils.particleTrail(60, 100, InteractionHand.MAIN_HAND
+//                                        , new Vec3(0, 1.5, 0F), new Vec3(0, 1.5, -2.9F), 5, 2, EFNEParticles.THUNDER_SLICE.get(), 1.2F)
+                        )
                         .newTimePair(0, 150 / 90F)
                         .addStateRemoveOld(EntityState.UPDATE_LIVING_MOTION, false)
                         .newTimePair(0F, Float.MAX_VALUE)
@@ -442,7 +471,7 @@ public class EFN_ESekiroAnimations {
 
         OPEN_MORTAL_BLADE_1 =
                 builder.nextAccessor("biped/sekiro/fushigiri/mortalblade_1", accessor -> new SekiroArtsAnimation(0.15F, accessor, Sekiro, 1F, 1
-                        , createSimplePhase(114, 152, 200, InteractionHand.MAIN_HAND, 1F, 2.0F, kusabimaru, null))
+                        , createSimplePhase(114, 152, 200, InteractionHand.MAIN_HAND, 1F, 1.0F, kusabimaru, null))
                         .addProperty(AnimationProperty.AttackPhaseProperty.HIT_SOUND, EpicFightSounds.EVISCERATE.get())
                         .addProperty(AnimationProperty.AttackPhaseProperty.PARTICLE, EpicFightParticles.EVISCERATE)
                         .addProperty(AnimationProperty.AttackPhaseProperty.SWING_SOUND, EFNSounds.NOSOUND.get())
@@ -568,23 +597,38 @@ public class EFN_ESekiroAnimations {
                         .addProperty(AnimationProperty.AttackPhaseProperty.SOURCE_TAG, Set.of(EpicFightDamageTypeTags.WEAPON_INNATE, EpicFightDamageTypeTags.FINISHER, EpicFightDamageTypeTags.GUARD_PUNCTURE))
                         .addProperty(AnimationProperty.AttackPhaseProperty.EXTRA_DAMAGE, Set.of(EFNExtraDamageInstance.MAX_HEALTH_PERCENTAGE_DAMAGE.create(0.025F, 50.0f, 200.0f), EFNExtraDamageInstance.EXTRA_DAMAGE.create(30), ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
                         .addProperty(AnimationProperty.AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
-                        , createSimplePhase(204, 228, 245, InteractionHand.MAIN_HAND, 1.5F, 1.5F, kusabimaru, MORTAL_BLADE2))
+                        , createSimplePhase(204, 228, 245, InteractionHand.MAIN_HAND, 1.5F, 1.5F, kusabimaru, MORTAL_BLADE2)
                         .addProperty(AnimationProperty.AttackPhaseProperty.HIT_SOUND, EpicFightSounds.EVISCERATE.get())
                         .addProperty(AnimationProperty.AttackPhaseProperty.PARTICLE, EpicFightParticles.EVISCERATE)
                         .addProperty(AnimationProperty.AttackPhaseProperty.SWING_SOUND, EFNSounds.NOSOUND.get())
                         .addProperty(AnimationProperty.AttackPhaseProperty.ARMOR_NEGATION_MODIFIER, ValueModifier.setter(100))
                         .addProperty(AnimationProperty.AttackPhaseProperty.SOURCE_TAG, Set.of(EpicFightDamageTypeTags.WEAPON_INNATE, EpicFightDamageTypeTags.FINISHER, EpicFightDamageTypeTags.GUARD_PUNCTURE))
                         .addProperty(AnimationProperty.AttackPhaseProperty.EXTRA_DAMAGE, Set.of(EFNExtraDamageInstance.MAX_HEALTH_PERCENTAGE_DAMAGE.create(0.025F, 50.0f, 200.0f), EFNExtraDamageInstance.EXTRA_DAMAGE.create(30), ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
-                        .addProperty(AnimationProperty.AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+                        .addProperty(AnimationProperty.AttackPhaseProperty.STUN_TYPE, StunType.HOLD))
                         .addProperty(AnimationProperty.StaticAnimationProperty.PLAY_SPEED_MODIFIER, ((dynamicAnimation, livingEntityPatch, v, v1, v2) -> 1.0F))
                         .addProperty(AnimationProperty.ActionAnimationProperty.CANCELABLE_MOVE, true)
                         .addProperty(AnimationProperty.AttackAnimationProperty.EXTRA_COLLIDERS, 6)
                         .addEvents(
+                                mortalBladeParticleTrail2(122, 146,
+                                        new Vec3(-0.6, 13, 0F),
+                                        new Vec3(-0.6, 14, 0F),
+                                        50, 30,
+                                        EFNParticles.MORTAL_BLADE.get(),
+                                        0.35F),
+                                mortalBladeParticleTrail2(204, 228,
+                                        new Vec3(-0.6, 26, 0F),
+                                        new Vec3(-0.6, 27, 0F),
+                                        50, 30,
+                                        EFNParticles.MORTAL_BLADE.get(),
+                                        0.35F),
+                                AvalonEventUtils.simpleCameraShake(122, 10, 4, 2, 16),
+                                AvalonEventUtils.simpleCameraShake(204, 10, 4, 2, 32),
                                 AvalonEventUtils.simpleSound(122, EFNSounds.MORTAL_BLADE_BLOODWHOOSH.get(), 1.2F, 1),
                                 AvalonEventUtils.simpleSound(204, EFNSounds.MORTAL_BLADE_BLOODWHOOSH.get(), 1.3F, 1),
                                 AnimationEvent.InTimeEvent.create(0.1F, (entityPatch, self, params) -> {
                                     entityPatch.getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 10, false, false, false));
-                                }, AnimationEvent.Side.SERVER))
+                                }, AnimationEvent.Side.SERVER)
+                        )
                 );
     }
 
@@ -622,6 +666,40 @@ public class EFN_ESekiroAnimations {
         }, AnimationEvent.Side.CLIENT);
     }
 
+    public static AnimationEvent.InPeriodEvent mortalBladeParticleTrail2(int startFrame, int endFrame, Vec3 startOffset, Vec3 endOffset, float timeInterpolation, int particleCount, ParticleOptions particleOptions, float random) {
+        float start = (float) startFrame / 60.0F;
+        float end = (float) endFrame / 60.0F;
+
+        Joint finalJoint = kusabimaru;
+        return AnimationEvent.InPeriodEvent.create(start, end, (entityPatch, self, params) -> {
+            AnimationPlayer player = entityPatch.getAnimator().getPlayerFor(null);
+            float prevElapsedTime = 0;
+            if (player != null) {
+                prevElapsedTime = player.getPrevElapsedTime();
+            }
+            float elapsedTime = 0;
+            if (player != null) {
+                elapsedTime = player.getElapsedTime();
+            }
+            float step = (elapsedTime - prevElapsedTime) / timeInterpolation;
+            Vec3f trailDirection = new Vec3f((float) (endOffset.x - startOffset.x), (float) (endOffset.y - startOffset.y), (float) (endOffset.z - startOffset.z));
+
+            for (float f = prevElapsedTime; f <= elapsedTime; f += step) {
+                for (int i = 0; i <= particleCount; ++i) {
+                    float ratio = (float) i / (float) particleCount;
+                    Vec3f pointOffset = new Vec3f((float) (startOffset.x + (double) (trailDirection.x * ratio)), (float) (startOffset.y + (double) (trailDirection.y * ratio)), (float) (startOffset.z + (double) (trailDirection.z * ratio)));
+                    double randX = (Math.random() - 0.5) * (double) random;
+                    double randY = (Math.random() - 0.5) * (double) random;
+                    double randZ = (Math.random() - 0.5) * (double) random;
+                    Vec3 worldPos = getJointWorldRawPos(entityPatch, finalJoint, f + step, pointOffset);
+                    if (entityPatch.getOriginal().level().isClientSide) {
+                        entityPatch.getOriginal().level().addParticle(particleOptions, worldPos.x + randX, worldPos.y + randY, worldPos.z + randZ, 0.0, 0.0, 0.0);
+                    }
+                }
+            }
+
+        }, AnimationEvent.Side.CLIENT);
+    }
     public static AnimationEvent.InPeriodEvent mortalBladeParticleTrail(int startFrame, int endFrame, Vec3 startOffset, Vec3 endOffset, float timeInterpolation, int particleCount, ParticleOptions particleOptions, float random) {
         float start = (float) startFrame / 60.0F;
         float end = (float) endFrame / 60.0F;
@@ -656,7 +734,6 @@ public class EFN_ESekiroAnimations {
 
         }, AnimationEvent.Side.CLIENT);
     }
-
     public static AnimationEvent.InPeriodEvent sakuraDanceParticleTrail(int startFrame, int endFrame, Vec3 startOffset, Vec3 endOffset, float timeInterpolation, int particleCount, ParticleOptions particleOptions, float random) {
         float start = (float) startFrame / 90.0F;
         float end = (float) endFrame / 90.0F;
@@ -691,6 +768,104 @@ public class EFN_ESekiroAnimations {
 
         }, AnimationEvent.Side.CLIENT);
     }
+    private static void doThunderSparkEffect(LivingEntity entity) {
+        LivingEntityPatch<?> entityPatch = (LivingEntityPatch<?>) entity.getCapability(EpicFightCapabilities.CAPABILITY_ENTITY, null).orElse(null);
+        if (entityPatch == null) return;
 
+        if (entityPatch.getValidItemInHand(InteractionHand.MAIN_HAND) == null) return;
 
+        Joint toolR = entityPatch.getArmature().searchJointByName("Tool_R");
+        if (toolR == null) return;
+
+        SimpleParticleType particle = EFNEParticles.THUNDER_SPARK.get();
+        float amount = 1.0F;
+        Vec3 particleSpeed = Vec3.ZERO;
+
+        Level level = entity.level();
+        RandomSource random = level.random;
+
+        LinkedList<Vec3> offsets = new LinkedList<>();
+        int fixedLength = 4;
+
+        for (int i = 1; i <= fixedLength; i++) {
+            offsets.add(new Vec3(0.0, -0.02 * i, -0.3 * i));
+        }
+
+        for (float step = 1.0F; step <= 9.0F; step += 2.0F) {
+            float time = (step + random.nextInt(3) - 1.0F) / 10.0F;
+            Pose middlePose = entityPatch.getAnimator().getPose(time);
+            Vec3 posMid = entity.getPosition(time);
+
+            OpenMatrix4f middleModelTf = OpenMatrix4f.createTranslation((float) posMid.x, (float) posMid.y, (float) posMid.z)
+                    .mulBack(OpenMatrix4f.createRotatorDeg(180.0F, Vec3f.Y_AXIS)
+                            .mulBack(entityPatch.getModelMatrix(time)));
+
+            OpenMatrix4f middleJointTf = entityPatch.getArmature()
+                    .getBindedTransformFor(middlePose, toolR)
+                    .mulFront(middleModelTf);
+
+            for (Vec3 modifier : offsets) {
+                if (random.nextInt(100) < 40) {
+                    Vec3 jittered = modifier.add(
+                            random.nextFloat() * 0.2 - 0.1,
+                            random.nextFloat() * 0.2 - 0.1,
+                            random.nextFloat() * 0.2 - 0.1
+                    );
+                    Vec3 particlePos = OpenMatrix4f.transform(middleJointTf, jittered);
+                    level.addParticle(particle,
+                            particlePos.x, particlePos.y, particlePos.z,
+                            particleSpeed.x, particleSpeed.y, particleSpeed.z);
+                }
+            }
+        }
+    }
+    private static void doThunderSliceEffect(LivingEntity entity) {
+        LivingEntityPatch<?> entityPatch = (LivingEntityPatch<?>) entity.getCapability(EpicFightCapabilities.CAPABILITY_ENTITY, null).orElse(null);
+        if (entityPatch == null) return;
+
+        if (entityPatch.getValidItemInHand(InteractionHand.MAIN_HAND) == null) return;
+
+        Joint toolR = entityPatch.getArmature().searchJointByName("Tool_R");
+        if (toolR == null) return;
+
+        SimpleParticleType particle = EFNEParticles.THUNDER_SLICE.get();
+        float amount = 1.0F;
+        Vec3 particleSpeed = Vec3.ZERO;
+
+        Level level = entity.level();
+        RandomSource random = level.random;
+
+        LinkedList<Vec3> offsets = new LinkedList<>();
+        for (int i = 4; i <= 16; i++) {
+            offsets.add(new Vec3(0.0, -0.02 * i, -0.3 * i));
+        }
+
+        for (float step = 1.0F; step <= 9.0F; step += 2.0F) {
+            float time = (step + random.nextInt(3) - 1.0F) / 10.0F;
+            Pose middlePose = entityPatch.getAnimator().getPose(time);
+            Vec3 posMid = entity.getPosition(time);
+
+            OpenMatrix4f middleModelTf = OpenMatrix4f.createTranslation((float) posMid.x, (float) posMid.y, (float) posMid.z)
+                    .mulBack(OpenMatrix4f.createRotatorDeg(180.0F, Vec3f.Y_AXIS)
+                            .mulBack(entityPatch.getModelMatrix(time)));
+
+            OpenMatrix4f middleJointTf = entityPatch.getArmature()
+                    .getBindedTransformFor(middlePose, toolR)
+                    .mulFront(middleModelTf);
+
+            for (Vec3 modifier : offsets) {
+                if (random.nextInt(100) < 40) {
+                    Vec3 jittered = modifier.add(
+                            random.nextFloat() * 0.2 - 0.1,
+                            random.nextFloat() * 0.2 - 0.1,
+                            random.nextFloat() * 0.2 - 0.1
+                    );
+                    Vec3 particlePos = OpenMatrix4f.transform(middleJointTf, jittered);
+                    level.addParticle(particle,
+                            particlePos.x, particlePos.y, particlePos.z,
+                            particleSpeed.x, particleSpeed.y, particleSpeed.z);
+                }
+            }
+        }
+    }
 }

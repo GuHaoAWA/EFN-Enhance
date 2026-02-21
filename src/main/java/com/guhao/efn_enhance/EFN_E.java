@@ -1,6 +1,7 @@
 package com.guhao.efn_enhance;
 
 import com.guhao.efn_enhance.client.particles.EFNEParticles;
+import com.guhao.efn_enhance.register.EFNEEffects;
 import com.guhao.efn_enhance.register.EFNEEntity;
 import com.guhao.efn_enhance.register.EFNESounds;
 import com.mojang.logging.LogUtils;
@@ -36,6 +37,7 @@ public class EFN_E
         EFNESounds.EFNESound.register(modEventBus);
         EFNEEntity.ENTITIES.register(modEventBus);
         EFNEParticles.PARTICLES.register(modEventBus);
+        EFNEEffects.EFFECTS.register(modEventBus);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)

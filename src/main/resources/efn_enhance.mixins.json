@@ -4,8 +4,13 @@
   "package": "com.guhao.efn_enhance.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "LivingEntityMixin",
+    "MixinMob",
+    "ServerPlayerPatchMixin"
   ],
   "client": [
+    "MixinKeyboardHandler",
+    "MixinKeyMapping"
   ],
   "injectors": {
     "defaultRequire": 1
