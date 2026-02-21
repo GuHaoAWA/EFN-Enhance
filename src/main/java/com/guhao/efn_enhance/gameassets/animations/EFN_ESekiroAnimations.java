@@ -415,8 +415,8 @@ public class EFN_ESekiroAnimations {
                         .addProperty(AnimationProperty.AttackAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0, 150F / 90F))
                         .addEvents(
                                 mortalBladeParticleTrail(5, 45,
-                                        new Vec3(-0.6, 11, 0F),
-                                        new Vec3(-0.6, 12, 0F),
+                                        new Vec3(-0.6, 6, 0F),
+                                        new Vec3(-0.6, 7, 0F),
                                         50, 15,
                                         EFNParticles.MORTAL_BLADE.get(),
                                         0.35F))
@@ -560,7 +560,7 @@ public class EFN_ESekiroAnimations {
                 );
         FAKE_OPEN_MORTAL_BLADE_2 =
                 builder.nextAccessor("biped/sekiro/fushigiri/fake_mortalblade_2", accessor -> new SekiroArtsAnimation(0.15F, accessor, Sekiro, 1F, 1
-                        , createSimplePhase(122, 146, 150, InteractionHand.MAIN_HAND, 1.5F, 1.5F, mortalBlade, MORTAL_BLADE)
+                        , createSimplePhase(122, 146, 150, InteractionHand.MAIN_HAND, 1.5F, 1.5F, kusabimaru, MORTAL_BLADE)
                         .addProperty(AnimationProperty.AttackPhaseProperty.HIT_SOUND, EpicFightSounds.EVISCERATE.get())
                         .addProperty(AnimationProperty.AttackPhaseProperty.PARTICLE, EpicFightParticles.EVISCERATE)
                         .addProperty(AnimationProperty.AttackPhaseProperty.SWING_SOUND, EFNSounds.NOSOUND.get())
@@ -568,7 +568,7 @@ public class EFN_ESekiroAnimations {
                         .addProperty(AnimationProperty.AttackPhaseProperty.SOURCE_TAG, Set.of(EpicFightDamageTypeTags.WEAPON_INNATE, EpicFightDamageTypeTags.FINISHER, EpicFightDamageTypeTags.GUARD_PUNCTURE))
                         .addProperty(AnimationProperty.AttackPhaseProperty.EXTRA_DAMAGE, Set.of(EFNExtraDamageInstance.MAX_HEALTH_PERCENTAGE_DAMAGE.create(0.025F, 50.0f, 200.0f), EFNExtraDamageInstance.EXTRA_DAMAGE.create(30), ExtraDamageInstance.SWEEPING_EDGE_ENCHANTMENT.create()))
                         .addProperty(AnimationProperty.AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
-                        , createSimplePhase(204, 228, 245, InteractionHand.MAIN_HAND, 1.5F, 1.5F, mortalBlade, MORTAL_BLADE2))
+                        , createSimplePhase(204, 228, 245, InteractionHand.MAIN_HAND, 1.5F, 1.5F, kusabimaru, MORTAL_BLADE2))
                         .addProperty(AnimationProperty.AttackPhaseProperty.HIT_SOUND, EpicFightSounds.EVISCERATE.get())
                         .addProperty(AnimationProperty.AttackPhaseProperty.PARTICLE, EpicFightParticles.EVISCERATE)
                         .addProperty(AnimationProperty.AttackPhaseProperty.SWING_SOUND, EFNSounds.NOSOUND.get())
@@ -578,7 +578,7 @@ public class EFN_ESekiroAnimations {
                         .addProperty(AnimationProperty.AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
                         .addProperty(AnimationProperty.StaticAnimationProperty.PLAY_SPEED_MODIFIER, ((dynamicAnimation, livingEntityPatch, v, v1, v2) -> 1.0F))
                         .addProperty(AnimationProperty.ActionAnimationProperty.CANCELABLE_MOVE, true)
-                        .addProperty(AnimationProperty.AttackAnimationProperty.EXTRA_COLLIDERS, 4)
+                        .addProperty(AnimationProperty.AttackAnimationProperty.EXTRA_COLLIDERS, 6)
                         .addEvents(
                                 AvalonEventUtils.simpleSound(122, EFNSounds.MORTAL_BLADE_BLOODWHOOSH.get(), 1.2F, 1),
                                 AvalonEventUtils.simpleSound(204, EFNSounds.MORTAL_BLADE_BLOODWHOOSH.get(), 1.3F, 1),

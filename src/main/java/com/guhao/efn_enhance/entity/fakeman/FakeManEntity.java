@@ -1,7 +1,7 @@
 package com.guhao.efn_enhance.entity.fakeman;
 
+import com.guhao.efn_enhance.gameassets.animations.EFN_ESekiroAnimations;
 import com.guhao.efn_enhance.register.EFNEEntity;
-import com.hm.efn.registries.EFNItem;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 
@@ -104,7 +105,11 @@ public class FakeManEntity extends TamableAnimal {
 
 
         this.setNoAi(true);
-
+        if (tickCount == 1) {
+            FakeManPatch fakeManPatch = EpicFightCapabilities.getEntityPatch(this, FakeManPatch.class);
+            assert fakeManPatch != null;
+            fakeManPatch.playAnimationSynchronized(EFN_ESekiroAnimations.SAKURA_DANCE,0.0f);
+        }
 
 
 

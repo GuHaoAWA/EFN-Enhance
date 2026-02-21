@@ -150,9 +150,5 @@ public class FakeManPatch extends HumanoidMobPatch<FakeManEntity> {
         }
     }
 
-    @Override
-    public void onJoinWorld(FakeManEntity entity, EntityJoinLevelEvent event) {
-        super.onJoinWorld(entity, event);
-        this.playAnimationSynchronized(EFN_ESekiroAnimations.KUSABIMARU_AUTO1,0.0f);
-    }
+
 }

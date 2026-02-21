@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("removal")
 public class FakeManRender extends HumanoidMobRenderer<FakeManEntity, HumanoidModel<FakeManEntity>> {
 
-
     public FakeManRender(EntityRendererProvider.Context pContext) {
         super(pContext, new HumanoidModel<>(pContext.bakeLayer(ModelLayers.PLAYER)), 0.5f);
         this.addLayer(new HumanoidArmorLayer<>(this,
@@ -61,7 +60,7 @@ public class FakeManRender extends HumanoidMobRenderer<FakeManEntity, HumanoidMo
 
     @Override
     public boolean shouldRender(FakeManEntity pLivingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ) {
-        super.shouldRender(pLivingEntity,pCamera,pCamX,pCamY,pCamZ);
-        return true;
+        return false;
     }
+
 }
