@@ -2,7 +2,9 @@ package com.guhao.efn_enhance.entity.fakeman;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.hm.efn.EFN;
+import com.guhao.efn_enhance.gameassets.animations.EFN_ESekiroAnimations;
+import com.hm.efn.gameasset.animations.EFNSekiroAnimations;
+import com.hm.efn.gameasset.animations.EFNSwordAnimations;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -18,7 +20,6 @@ import yesman.epicfight.api.animation.Animator;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.utils.AttackResult;
-import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.Factions;
 import yesman.epicfight.world.capabilities.entitypatch.HumanoidMobPatch;
@@ -50,7 +51,12 @@ public class FakeManPatch extends HumanoidMobPatch<FakeManEntity> {
     protected void setWeaponMotions() {
         super.setWeaponMotions();
         this.weaponLivingMotions = Maps.newHashMap();
-        this.weaponLivingMotions.put(CapabilityItem.WeaponCategories.UCHIGATANA, ImmutableMap.of(CapabilityItem.Styles.TWO_HAND, Set.of(Pair.of(LivingMotions.WALK, Animations.BIPED_WALK_UCHIGATANA), Pair.of(LivingMotions.CHASE, Animations.BIPED_RUN_UCHIGATANA), Pair.of(LivingMotions.IDLE, Animations.BIPED_IDLE), Pair.of(LivingMotions.RUN, Animations.BIPED_RUN_UCHIGATANA))));
+        this.weaponLivingMotions.put(CapabilityItem.WeaponCategories.UCHIGATANA,
+                ImmutableMap.of(CapabilityItem.Styles.TWO_HAND, Set.of(
+                        Pair.of(LivingMotions.WALK, EFNSwordAnimations.NF_SWORD_WALK),
+                        Pair.of(LivingMotions.CHASE, EFNSwordAnimations.NF_SWORD_RUN),
+                        Pair.of(LivingMotions.IDLE, EFNSekiroAnimations.KUSABIMARU_IDLE),
+                        Pair.of(LivingMotions.RUN, EFNSwordAnimations.NF_SWORD_RUN))));
     }
 
     @Override
@@ -90,10 +96,8 @@ public class FakeManPatch extends HumanoidMobPatch<FakeManEntity> {
             resultTypeField.set(this, attackResult.resultType);
             damageField.set(this, attackResult.damage);
 
-            EFN.LOGGER.info("DoppelgangerPatch - Set attack result: type={}, damage={}",
-                    attackResult.resultType, attackResult.damage);
-        } catch (Exception e) {
-            EFN.LOGGER.error("Failed to set doppelganger attack result", e);
+        } catch (Exception ignored) {
+
         }
     }
 
@@ -147,6 +151,6 @@ public class FakeManPatch extends HumanoidMobPatch<FakeManEntity> {
     @Override
     public void onJoinWorld(FakeManEntity entity, EntityJoinLevelEvent event) {
         super.onJoinWorld(entity, event);
-//        this.playAnimationSynchronized(EFN_ESekiroAnimations.FAKE_OPEN_MORTAL_BLADE_2,0.0f);
+        this.playAnimationSynchronized(EFN_ESekiroAnimations.KUSABIMARU_AUTO1,0.0f);
     }
 }

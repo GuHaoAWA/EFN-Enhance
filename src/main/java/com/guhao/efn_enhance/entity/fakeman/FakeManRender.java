@@ -1,15 +1,16 @@
 package com.guhao.efn_enhance.entity.fakeman;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
+import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,9 +46,17 @@ public class FakeManRender extends HumanoidMobRenderer<FakeManEntity, HumanoidMo
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull FakeManEntity doppelgangerEntity) {
-        if (Minecraft.getInstance().player != null) Minecraft.getInstance().player.getSkinTextureLocation();
-        return new ResourceLocation("efn:textures/entity/doppelganger.png");
+    public @NotNull ResourceLocation getTextureLocation(@NotNull FakeManEntity fakeManEntity) {
+        var owner = fakeManEntity.getOwner();
+        if (owner != null) {
+            if (owner instanceof AbstractClientPlayer clientPlayer) {
+                return clientPlayer.getSkinTextureLocation();
+            } else {
+                return DefaultPlayerSkin.getDefaultSkin();
+            }
+        }
+
+        return DefaultPlayerSkin.getDefaultSkin();
     }
 
     @Override

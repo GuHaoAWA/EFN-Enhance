@@ -1,6 +1,7 @@
 package com.guhao.efn_enhance.entity.fakeman;
 
 import com.guhao.efn_enhance.register.EFNEEntity;
+import com.hm.efn.registries.EFNItem;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -94,9 +95,7 @@ public class FakeManEntity extends TamableAnimal {
 
     @Override
     public void tick() {
-        if (getOwner() != null) {
-            setItemSlot(EquipmentSlot.MAINHAND, getOwner().getItemBySlot(EquipmentSlot.MAINHAND).copy());
-        }
+
         super.tick();
         if (this.getOwner() == null || !this.getOwner().isAlive() || this.getOwner().getHealth() <= 0 || tickCount >= 100) {
             this.remove(RemovalReason.DISCARDED);
