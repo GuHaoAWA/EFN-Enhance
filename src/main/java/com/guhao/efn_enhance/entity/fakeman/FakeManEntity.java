@@ -108,7 +108,7 @@ public class FakeManEntity extends TamableAnimal {
         if (tickCount == 1) {
             FakeManPatch fakeManPatch = EpicFightCapabilities.getEntityPatch(this, FakeManPatch.class);
             assert fakeManPatch != null;
-            fakeManPatch.playAnimationSynchronized(EFN_ESekiroAnimations.SAKURA_DANCE,0.0f);
+            fakeManPatch.playAnimationSynchronized(EFN_ESekiroAnimations.FAKE_OPEN_MORTAL_BLADE_2,0.0f);
         }
 
 
