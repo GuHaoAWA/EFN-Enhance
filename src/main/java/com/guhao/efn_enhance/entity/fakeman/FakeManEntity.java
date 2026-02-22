@@ -27,6 +27,9 @@ public class FakeManEntity extends TamableAnimal {
         super(EFNEEntity.FAKE_MAN.get(), owner.level());
         tame(owner);
         this.setPersistenceRequired();
+        this.noCulling = true;
+        this.setNoGravity(true);
+        this.noPhysics = true;
     }
 
     public FakeManEntity(EntityType<FakeManEntity> FakeManEntityType, Level level) {
