@@ -492,6 +492,7 @@ public class EFN_ESekiroAnimations {
                         .addProperty(AnimationProperty.ActionAnimationProperty.CANCELABLE_MOVE, true)
                         .addProperty(AnimationProperty.AttackAnimationProperty.EXTRA_COLLIDERS, 6)
                         .addEvents(
+                                AvalonEventUtils.simpleCameraShake(10, 40, 6, 4, 32),
                                 AvalonEventUtils.simpleSound(24, EFNSounds.MORTAL_BLADE_CHARGE1.get(), 1F, 1),
                                 AvalonEventUtils.simpleSound(34, EFNSounds.CIRCULATE_QI.get(), 1F, 1),
                                 AvalonEventUtils.simpleSound(115, EFNSounds.MORTAL_BLADE_BLOODWHOOSH.get(), 1.3F, 1),

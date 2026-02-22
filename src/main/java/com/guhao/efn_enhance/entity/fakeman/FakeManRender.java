@@ -33,15 +33,15 @@ public class FakeManRender extends HumanoidMobRenderer<FakeManEntity, HumanoidMo
 
     @Override
     public void render(FakeManEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        if (entity.isAlive()) {
-            float swing = entity.tickCount + partialTicks;
-            poseStack.pushPose();
-            poseStack.translate(0.0F, (float) Math.sin(swing * 0.1F) * 0.05F, 0.0F);
-            super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-            poseStack.popPose();
-        } else {
-            super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-        }
+//        if (entity.isAlive()) {
+//            float swing = entity.tickCount + partialTicks;
+//            poseStack.pushPose();
+//            poseStack.translate(0.0F, (float) Math.sin(swing * 0.1F) * 0.05F, 0.0F);
+//            super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+//            poseStack.popPose();
+//        } else {
+//            super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+//        }
     }
 
     @Override
@@ -58,9 +58,6 @@ public class FakeManRender extends HumanoidMobRenderer<FakeManEntity, HumanoidMo
         return DefaultPlayerSkin.getDefaultSkin();
     }
 
-    @Override
-    public boolean shouldRender(FakeManEntity pLivingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ) {
-        return false;
-    }
+
 
 }
