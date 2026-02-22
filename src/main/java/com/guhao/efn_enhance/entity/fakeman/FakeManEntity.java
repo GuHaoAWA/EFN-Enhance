@@ -1,6 +1,5 @@
 package com.guhao.efn_enhance.entity.fakeman;
 
-import com.guhao.efn_enhance.gameassets.animations.EFN_ESekiroAnimations;
 import com.guhao.efn_enhance.register.EFNEEntity;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.server.level.ServerLevel;
@@ -15,17 +14,22 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import yesman.epicfight.api.animation.types.StaticAnimation;
+import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 
 public class FakeManEntity extends TamableAnimal {
 
-
-    public FakeManEntity(ServerPlayer owner) {
+    AssetAccessor<? extends StaticAnimation> animation;
+    float transitionTimeModifier;
+    public FakeManEntity(ServerPlayer owner, AssetAccessor<? extends StaticAnimation> animation, float transitionTimeModifier) {
         super(EFNEEntity.FAKE_MAN.get(), owner.level());
+        this.transitionTimeModifier = transitionTimeModifier;
+        this.animation = animation;
         tame(owner);
-        this.setPersistenceRequired();
+//        this.setPersistenceRequired();
         this.noCulling = true;
         this.setNoGravity(true);
         this.noPhysics = true;
@@ -38,21 +42,37 @@ public class FakeManEntity extends TamableAnimal {
 
     public static AttributeSupplier getDefaultAttribute() {
         return Animal.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 999999999)
+                .add(Attributes.MAX_HEALTH, 999999)
                 .add(Attributes.ATTACK_DAMAGE, 10.0)
-                .add(EpicFightAttributes.MAX_STRIKES.get(), 6.0)
+                .add(Attributes.ATTACK_SPEED, 1.6)
+                .add(Attributes.ATTACK_KNOCKBACK, 0)
+                .add(EpicFightAttributes.MAX_STRIKES.get(), 99999.0)
+                .add(EpicFightAttributes.IMPACT.get(), 10)
+                .add(EpicFightAttributes.MAX_STAMINA.get(), 999999)
+                .add(EpicFightAttributes.STUN_ARMOR.get(), 100)
+                .add(EpicFightAttributes.WEIGHT.get(), 0)
+                .add(EpicFightAttributes.STAMINA_REGEN.get(), 1)
+                .add(EpicFightAttributes.OFFHAND_IMPACT.get(), 10)
+                .add(EpicFightAttributes.OFFHAND_ATTACK_SPEED.get(), 1)
+                .add(EpicFightAttributes.EXECUTION_RESISTANCE.get(), 100)
+                .add(EpicFightAttributes.OFFHAND_ARMOR_NEGATION.get(), 100)
+                .add(EpicFightAttributes.OFFHAND_MAX_STRIKES.get(), 99999.0)
                 .build();
     }
 
 
 
-    public static void summon(ServerPlayerPatch serverPlayerPatch) {
-        FakeManEntity fakeMan = new FakeManEntity(serverPlayerPatch.getOriginal());
+    public static void summon(ServerPlayerPatch serverPlayerPatch,AssetAccessor<? extends StaticAnimation> animation,float transitionTimeModifier) {
+        FakeManEntity fakeMan = new FakeManEntity(serverPlayerPatch.getOriginal(),animation,transitionTimeModifier);
         Vec3 vec3 = serverPlayerPatch.getOriginal().position();
         fakeMan.moveTo(new Vec3(vec3.x, vec3.y, vec3.z));
         serverPlayerPatch.getOriginal().serverLevel().addFreshEntity(fakeMan);
     }
-
+    public static void summon_pos(ServerPlayerPatch serverPlayerPatch,AssetAccessor<? extends StaticAnimation> animation,float transitionTimeModifier,double x,double y,double z) {
+        FakeManEntity fakeMan = new FakeManEntity(serverPlayerPatch.getOriginal(),animation,transitionTimeModifier);
+        fakeMan.moveTo(new Vec3(x,y,z));
+        serverPlayerPatch.getOriginal().serverLevel().addFreshEntity(fakeMan);
+    }
 
     @Override
     public void push(@NotNull Entity pEntity) {
@@ -112,7 +132,7 @@ public class FakeManEntity extends TamableAnimal {
         FakeManPatch fakeManPatch = EpicFightCapabilities.getEntityPatch(this, FakeManPatch.class);
         assert fakeManPatch != null;
         if (tickCount == 1) {
-            fakeManPatch.playAnimationSynchronized(EFN_ESekiroAnimations.FAKE_OPEN_MORTAL_BLADE_2,-0.2f);
+            fakeManPatch.playAnimationSynchronized(animation,transitionTimeModifier);
         }
 
         if (!fakeManPatch.getEntityState().turningLocked()) {

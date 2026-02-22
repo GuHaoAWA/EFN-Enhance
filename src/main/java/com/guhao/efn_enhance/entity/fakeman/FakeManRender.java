@@ -6,7 +6,6 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
@@ -18,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 public class FakeManRender extends HumanoidMobRenderer<FakeManEntity, HumanoidModel<FakeManEntity>> {
 
     public FakeManRender(EntityRendererProvider.Context pContext) {
-        super(pContext, new HumanoidModel<>(pContext.bakeLayer(ModelLayers.PLAYER)), 0.5f);
+        super(pContext, new HumanoidModel<>(pContext.bakeLayer(ModelLayers.PLAYER)), 0);
         this.addLayer(new HumanoidArmorLayer<>(this,
                 new HumanoidModel<>(pContext.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
                 new HumanoidModel<>(pContext.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)),
@@ -27,12 +26,12 @@ public class FakeManRender extends HumanoidMobRenderer<FakeManEntity, HumanoidMo
     }
 
     @Override
-    protected RenderType getRenderType(FakeManEntity entity, boolean visible, boolean invisibleToPlayer, boolean glowing) {
+    protected RenderType getRenderType(@NotNull FakeManEntity entity, boolean visible, boolean invisibleToPlayer, boolean glowing) {
         return RenderType.entityTranslucent(getTextureLocation(entity));
     }
 
     @Override
-    public void render(FakeManEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public void render(FakeManEntity entity, float entityYaw, float partialTicks, @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, int packedLight) {
 //        if (entity.isAlive()) {
 //            float swing = entity.tickCount + partialTicks;
 //            poseStack.pushPose();

@@ -12,7 +12,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class EFNEEntity {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, EFN_E.MODID);
     public static final RegistryObject<EntityType<FakeManEntity>> FAKE_MAN = ENTITIES.register("fake_man", () ->
-            EntityType.Builder.<FakeManEntity>of(FakeManEntity::new, MobCategory.CREATURE)
+            EntityType.Builder.<FakeManEntity>of(FakeManEntity::new, MobCategory.MONSTER)
                     .fireImmune().sized(0.6F, 1.8F).clientTrackingRange(64).build("fake_man")
     );
 

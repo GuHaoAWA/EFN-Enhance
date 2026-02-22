@@ -5,12 +5,10 @@ import com.google.common.collect.Maps;
 import com.hm.efn.gameasset.animations.EFNSekiroAnimations;
 import com.hm.efn.gameasset.animations.EFNSwordAnimations;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import org.jetbrains.annotations.Nullable;
 import yesman.epicfight.api.animation.AnimationManager;
@@ -18,17 +16,15 @@ import yesman.epicfight.api.animation.Animator;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.utils.AttackResult;
+import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.Factions;
 import yesman.epicfight.world.capabilities.entitypatch.HumanoidMobPatch;
-import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
 
 import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 
 @SuppressWarnings("removal")
@@ -62,66 +58,12 @@ public class FakeManPatch extends HumanoidMobPatch<FakeManEntity> {
     public void updateMotion(boolean considerInaction) {
         super.commonAggressiveRangedMobUpdateMotion(considerInaction);
     }
-
     @Override
     public AttackResult attack(EpicFightDamageSource damageSource, Entity target, InteractionHand hand) {
-        if (target == this.getOriginal().getOwner()) {
-            return AttackResult.missed(0);
-        }
-
-        AttackResult attackResult;
-
-        if (this.getOwnerPatch() != null && this.shouldUseOwnerAttack()) {
-            EpicFightDamageSource modifiedSource = damageSource.addRuntimeTag(createUniqueAttackIdentifier(true));
-            attackResult = this.getOwnerPatch().attack(modifiedSource, target, hand);
-        } else {
-            damageSource.addRuntimeTag(createUniqueAttackIdentifier(false));
-            attackResult = super.attack(damageSource, target, hand);
-        }
-
-        setFakeManAttackResult(attackResult);
-
-        return attackResult;
-    }
-
-    private void setFakeManAttackResult(AttackResult attackResult) {
-        try {
-            java.lang.reflect.Field resultTypeField = LivingEntityPatch.class.getDeclaredField("lastAttackResultType");
-            java.lang.reflect.Field damageField = LivingEntityPatch.class.getDeclaredField("lastDealDamage");
-
-            resultTypeField.setAccessible(true);
-            damageField.setAccessible(true);
-
-            resultTypeField.set(this, attackResult.resultType);
-            damageField.set(this, attackResult.damage);
-
-        } catch (Exception ignored) {
-
-        }
+        return this.getOwnerPatch() != null && this.shouldUseOwnerAttack() ? this.getOwnerPatch().attack(damageSource, target, hand) : super.attack(damageSource, target, hand);
     }
 
 
-    @Override
-    public EpicFightDamageSource getDamageSource(AnimationManager.AnimationAccessor<? extends StaticAnimation> animation, InteractionHand hand) {
-        if (this.getOwnerPatch() != null) {
-            EpicFightDamageSource ownerSource = this.getOwnerPatch().getDamageSource(animation, hand);
-            return ownerSource.addRuntimeTag(createUniqueAttackIdentifier(true));
-        }
-        return super.getDamageSource(animation, hand).addRuntimeTag(createUniqueAttackIdentifier(false));
-    }
-
-    private TagKey<DamageType> createUniqueAttackIdentifier(boolean isOwnerAttack) {
-        UUID attackerUUID = isOwnerAttack ?
-                this.getOwnerPatch().getOriginal().getUUID() :
-                this.getOriginal().getUUID();
-
-        String identifier = String.format("attack_%s_%d_%d",
-                attackerUUID,
-                System.nanoTime(),
-                ThreadLocalRandom.current().nextInt(1000));
-
-        return TagKey.create(Registries.DAMAGE_TYPE, new ResourceLocation("epicfight", identifier));
-    }
 
     @Override
     public void tick(LivingEvent.LivingTickEvent event) {
@@ -147,5 +89,29 @@ public class FakeManPatch extends HumanoidMobPatch<FakeManEntity> {
         }
     }
 
+    @Override
+    public @Nullable EpicFightDamageSource getEpicFightDamageSource() {
+        return this.getOwnerPatch() != null ? this.getOwnerPatch().getEpicFightDamageSource() : super.getEpicFightDamageSource();
+    }
+    @Override
+    public EpicFightDamageSource getDamageSource(AnimationManager.AnimationAccessor<? extends StaticAnimation> animation, InteractionHand hand) {
+        return this.getOwnerPatch() != null ? this.getOwnerPatch().getDamageSource(animation, hand) : super.getDamageSource(animation, hand);
+    }
+    @OnlyIn(Dist.CLIENT)
+    public boolean flashTargetIndicator(LocalPlayerPatch playerPatch) {
+        return false;
+    }
+    public boolean isTargetInvulnerable(Entity entity) {
+        if (entity.equals((this.getOriginal()).getOwner())) {
+            return true;
+        } else {
+            if (entity instanceof FakeManEntity artifactSpiritEntity) {
+                if (this.getOwnerPatch() != null) {
+                    return this.getOwnerPatch().getOriginal().equals(artifactSpiritEntity.getOwner());
+                }
+            }
 
+            return false;
+        }
+    }
 }
