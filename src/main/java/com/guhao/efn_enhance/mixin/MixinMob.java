@@ -2,8 +2,6 @@ package com.guhao.efn_enhance.mixin;
 
 import com.guhao.efn_enhance.entity.fakeman.FakeManEntity;
 import com.guhao.efn_enhance.register.EFNEEffects;
-import com.hm.efn.entity.doppelganger.DoppelgangerEntity;
-import com.hm.efn.registries.EFNMobEffectRegistry;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.control.BodyRotationControl;

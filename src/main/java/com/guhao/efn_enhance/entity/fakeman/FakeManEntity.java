@@ -2,7 +2,6 @@ package com.guhao.efn_enhance.entity.fakeman;
 
 import com.guhao.efn_enhance.gameassets.animations.EFN_ESekiroAnimations;
 import com.guhao.efn_enhance.register.EFNEEntity;
-import com.hm.efn.entity.doppelganger.DoppelgangerPatch;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;

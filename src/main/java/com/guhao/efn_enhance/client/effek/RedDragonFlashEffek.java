@@ -1,7 +1,6 @@
 package com.guhao.efn_enhance.client.effek;
 
 import com.guhao.efn_enhance.EFN_E;
-import com.hm.efn.client.effek.DragonFlashEffek;
 import com.hm.efn.particle.EFNEffekParticle;
 import mod.chloeprime.aaaparticles.api.common.AAALevel;
 import mod.chloeprime.aaaparticles.api.common.ParticleEmitterInfo;

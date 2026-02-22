@@ -6,8 +6,6 @@ import com.guhao.efn_enhance.entity.fakeman.FakeManEntity;
 import com.guhao.efn_enhance.entity.fakeman.FakeManPatch;
 import com.guhao.efn_enhance.entity.fakeman.FakeManRender;
 import com.guhao.efn_enhance.entity.fakeman.FakeManRenderer;
-import com.hm.efn.entity.EFNEntity;
-import com.hm.efn.entity.renderer.DoppelgangerDarkRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;

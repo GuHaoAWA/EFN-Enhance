@@ -1,7 +1,6 @@
 package com.guhao.efn_enhance.effects;
 
 import com.guhao.efn_enhance.EFN_E;
-import com.hm.efn.EFN;
 import com.hm.efn.particle.EFNEffekParticle;
 import com.hm.efn.particle.EFNParticles;
 import mod.chloeprime.aaaparticles.api.common.AAALevel;

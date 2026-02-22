@@ -1,7 +1,6 @@
 package com.guhao.efn_enhance.mixin;
 
 import com.guhao.efn_enhance.register.EFNEEffects;
-import com.hm.efn.registries.EFNMobEffectRegistry;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
