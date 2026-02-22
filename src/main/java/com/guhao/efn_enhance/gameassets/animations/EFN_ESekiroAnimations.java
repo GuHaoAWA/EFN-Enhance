@@ -675,7 +675,18 @@ public class EFN_ESekiroAnimations {
                                 AnimationEvent.InTimeEvent.create(0.0001F, (entityPatch, self, params) -> {
                                     ServerPlayerPatch serverPlayerPatch = EpicFightCapabilities.getEntityPatch(entityPatch.getOriginal(), ServerPlayerPatch.class);
                                     if (serverPlayerPatch != null) FakeManEntity.summon(serverPlayerPatch,EFN_ESekiroAnimations.FAKE_OPEN_MORTAL_BLADE_2,-0.2f);
-                                    if (serverPlayerPatch != null) FakeManEntity.summon(serverPlayerPatch,EFN_ESekiroAnimations.SAKURA_DANCE,0.0f);
+                                    if (serverPlayerPatch != null) {
+                                        if (entityPatch.getTarget() != null) {
+                                            LivingEntity target = entityPatch.getTarget();
+                                            float yaw = target.getYRot();
+                                            double behindX = target.getX() - Math.sin(Math.toRadians(yaw)) * 2.0;
+                                            double behindZ = target.getZ() + Math.cos(Math.toRadians(yaw)) * 2.0;
+                                            double y = target.getY() + 0.2;
+                                            FakeManEntity.summon_pos(serverPlayerPatch, EFN_ESekiroAnimations.SAKURA_DANCE, 0.0f, behindX, y, behindZ);
+                                        } else {
+                                            FakeManEntity.summon(serverPlayerPatch, EFN_ESekiroAnimations.SAKURA_DANCE, 0.0f);
+                                        }
+                                    }
                                 }, AnimationEvent.Side.SERVER),
                                 AnimationEvent.InTimeEvent.create(0.00001F, (entityPatch, self, params) -> {
                                     ServerPlayerPatch serverPlayerPatch = EpicFightCapabilities.getEntityPatch(entityPatch.getOriginal(), ServerPlayerPatch.class);
@@ -691,9 +702,6 @@ public class EFN_ESekiroAnimations {
                                 AnimationEvent.InTimeEvent.create(0.1F, (entityPatch, self, params) -> {
                                     entityPatch.getOriginal().addEffect(new MobEffectInstance(EFNMobEffectRegistry.SIN_STUN_IMMUNITY.get(), 110, 1, false, false, false));
                                 }, AnimationEvent.Side.SERVER),
-                                AnimationEvent.InTimeEvent.create(0.01F, (entityPatch, self, params) -> {
-
-                                }, AnimationEvent.Side.CLIENT),
                                 AnimationEvent.InTimeEvent.create(0.567F, (entityPatch, self, params) -> {
 
 
