@@ -508,10 +508,10 @@ public class EFN_ESekiroAnimations {
                                     entityPatch.getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 10, false, false, false));
                                 }, AnimationEvent.Side.SERVER),
                                 AnimationEvent.InTimeEvent.create(0.1F, (entityPatch, self, params) -> {
-                                    entityPatch.getOriginal().addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 55, 2, false, false, false));
+                                    entityPatch.getOriginal().addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 110, 2, false, false, false));
                                 }, AnimationEvent.Side.SERVER),
                                 AnimationEvent.InTimeEvent.create(0.1F, (entityPatch, self, params) -> {
-                                    entityPatch.getOriginal().addEffect(new MobEffectInstance(EFNMobEffectRegistry.SIN_STUN_IMMUNITY.get(), 55, 1, false, false, false));
+                                    entityPatch.getOriginal().addEffect(new MobEffectInstance(EFNMobEffectRegistry.SIN_STUN_IMMUNITY.get(), 110, 1, false, false, false));
                                 }, AnimationEvent.Side.SERVER),
                                 AnimationEvent.InTimeEvent.create(0.01F, (entityPatch, self, params) -> {
                                     if (EffekUnits.VFXENABLE() && EFNClientConfig.SEKIRO_MORTAL_BLADE_VFX.get()) {
@@ -686,10 +686,10 @@ public class EFN_ESekiroAnimations {
                                     entityPatch.getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 10, false, false, false));
                                 }, AnimationEvent.Side.SERVER),
                                 AnimationEvent.InTimeEvent.create(0.1F, (entityPatch, self, params) -> {
-                                    entityPatch.getOriginal().addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 55, 2, false, false, false));
+                                    entityPatch.getOriginal().addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 110, 2, false, false, false));
                                 }, AnimationEvent.Side.SERVER),
                                 AnimationEvent.InTimeEvent.create(0.1F, (entityPatch, self, params) -> {
-                                    entityPatch.getOriginal().addEffect(new MobEffectInstance(EFNMobEffectRegistry.SIN_STUN_IMMUNITY.get(), 55, 1, false, false, false));
+                                    entityPatch.getOriginal().addEffect(new MobEffectInstance(EFNMobEffectRegistry.SIN_STUN_IMMUNITY.get(), 110, 1, false, false, false));
                                 }, AnimationEvent.Side.SERVER),
                                 AnimationEvent.InTimeEvent.create(0.01F, (entityPatch, self, params) -> {
 
