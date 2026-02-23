@@ -2,8 +2,13 @@ package com.guhao.efn_enhance.gameassets.type;
 
 
 import com.guhao.efn_enhance.gameassets.animations.EFN_EBroadBladeAnimations;
+import com.hm.efn.EFNCommonConfig;
+import com.hm.efn.entity.doppelganger.DoppelgangerEntity;
 import com.hm.efn.mixin.ArmaturesAccessor;
+import com.hm.efn.registries.EFNMobEffectRegistry;
+import com.merlin204.avalon.entity.vfx.VFXEntity;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -12,12 +17,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.animation.property.AnimationProperty;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
+import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.collider.Collider;
 import yesman.epicfight.api.model.Armature;
@@ -28,14 +35,14 @@ import yesman.epicfight.model.armature.HumanoidArmature;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
+import yesman.epicfight.world.effect.EpicFightMobEffects;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ExecuteAttackAnimation extends AttackAnimation {
     private final float fixDistance;
-
+    private final Set<String> blacklistLoggedEntities = Collections.newSetFromMap(new ConcurrentHashMap<>());
     public ExecuteAttackAnimation(float transitionTime, float antic, float preDelay, float contact, float recovery, @Nullable Collider collider, Joint colliderJoint, AnimationManager.AnimationAccessor<? extends AttackAnimation> accessor, AssetAccessor<? extends Armature> armature, float fixDistance) {
         super(transitionTime, antic, preDelay, contact, recovery, collider, colliderJoint, accessor, armature);
         this.fixDistance = fixDistance;
@@ -123,12 +130,115 @@ public class ExecuteAttackAnimation extends AttackAnimation {
             if (targetPatch != null) {
                 if (targetPatch.isStunned() && target.isAlive()) {
                     this.fixTargetMotion(entityPatch, targetPatch);
-                    targetPatch.playAnimationSynchronized(EFN_EBroadBladeAnimations.BROADBLADE_EXECUTED, -0.1f);
+                    if (!shouldSkipHit(targetPatch,entityPatch)) {
+                        targetPatch.playAnimationSynchronized(EFN_EBroadBladeAnimations.BROADBLADE_EXECUTED, -0.1f);
+                    }
                 }
             }
         }
     }
+    private boolean shouldSkipHit(LivingEntityPatch<?> targetPatch, LivingEntityPatch<?> attackerPatch) {
 
+        if (targetPatch == null || targetPatch.getOriginal() == null || attackerPatch == null) {
+            return true;
+        }
+
+        LivingEntity target = targetPatch.getOriginal();
+        LivingEntity attacker = attackerPatch.getOriginal();
+
+        if (target == attacker) {
+            return true;
+        }
+
+        if (target == attacker.getVehicle()) {
+            return true;
+        }
+
+        if (attacker.getPassengers().contains(target)) {
+            return true;
+        }
+
+        if (attacker instanceof DoppelgangerEntity doppelganger) {
+            LivingEntity owner = doppelganger.getOwner();
+            if (target == owner) {
+                return true;
+            }
+        }
+
+        if (target instanceof DoppelgangerEntity doppelganger) {
+            LivingEntity owner = doppelganger.getOwner();
+            if (attacker == owner) {
+                return true;
+            }
+        }
+
+        ResourceLocation entityId = ForgeRegistries.ENTITY_TYPES.getKey(target.getType());
+
+        if (entityId != null) {
+            String entityIdString = entityId.toString();
+
+            if (EFNCommonConfig.YAMATO_STUNANIMATION_BLACKLIST.get().contains(entityIdString)) {
+                blacklistLoggedEntities.add(String.valueOf(target.getId()));
+                return true;
+            }
+        }
+
+        boolean isInWhitelist = entityId != null && EFNCommonConfig.YAMATO_STUNANIMATION_WHITELIST.get().contains(entityId.toString());
+
+        Armature armature = targetPatch.getArmature();
+        Map<EntityType<?>, AssetAccessor<? extends Armature>> map = ArmaturesAccessor.getEntityTypeArmatureMapper();
+        AssetAccessor<? extends Armature> armatureAccessor = map.get(targetPatch.getOriginal().getType());
+
+        boolean isHumanoidSkeleton = (armature instanceof HumanoidArmature);
+        boolean isBipedSkeleton = (armatureAccessor == Armatures.BIPED);
+
+        //只要满足白名单或骨架类型任一条件就可以播放动画
+        boolean canPlayAnimation = isInWhitelist || isHumanoidSkeleton || isBipedSkeleton;
+
+        // 如果不能播放动画，直接返回true跳过
+        if (!canPlayAnimation) {
+            return true;
+        }
+
+        if (target instanceof Player player) {
+            if (player.isCreative() || player.isSpectator()) {
+                blacklistLoggedEntities.add(String.valueOf(target.getId()));
+                return true;
+            }
+        }
+
+        if (target instanceof DoppelgangerEntity) {
+            blacklistLoggedEntities.add(String.valueOf(target.getId()));
+            return true;
+        }
+
+        if (target instanceof VFXEntity) {
+            blacklistLoggedEntities.add(String.valueOf(target.getId()));
+            return true;
+        }
+
+        if (target.hasEffect(EpicFightMobEffects.STUN_IMMUNITY.get())) {
+            blacklistLoggedEntities.add(String.valueOf(target.getId()));
+            return true;
+        }
+
+        if (target.hasEffect(EFNMobEffectRegistry.SIN_STUN_IMMUNITY.get())) {
+            blacklistLoggedEntities.add(String.valueOf(target.getId()));
+            return true;
+        }
+
+        if (target.hasEffect(EFNMobEffectRegistry.INVINCIBILITY_EFFECT.get())) {
+            blacklistLoggedEntities.add(String.valueOf(target.getId()));
+            return true;
+        }
+
+        if (target.isInvulnerable()) {
+            blacklistLoggedEntities.add(String.valueOf(target.getId()));
+            return true;
+        }
+
+        return false;
+    }
     private void fixTargetMotion(LivingEntityPatch<?> entityPatch, LivingEntityPatch<?> targetPatch) {
         Vec3 pos = calculateFrontPosition(entityPatch.getOriginal(), this.fixDistance);
         targetPatch.getOriginal().teleportTo(pos.x, pos.y, pos.z);

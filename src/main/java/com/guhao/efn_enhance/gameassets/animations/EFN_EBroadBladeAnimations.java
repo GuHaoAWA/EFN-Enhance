@@ -8,7 +8,9 @@ import com.hm.efn.registries.EFNMobEffectRegistry;
 import com.hm.efn.util.yamato.DMC_V_JC_Client;
 import com.hm.efn.util.yamato.DMC_V_JC_Server;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -29,6 +31,7 @@ import yesman.epicfight.api.utils.math.ValueModifier;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.gameasset.EpicFightSounds;
+import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.world.damagesource.EpicFightDamageTypeTags;
 import yesman.epicfight.world.damagesource.StunType;
 
@@ -47,7 +50,7 @@ public class EFN_EBroadBladeAnimations {
         Armatures.ArmatureAccessor<Armature> Broadblade = Armatures.ArmatureAccessor.create(EFN.MODID, "weapon/broadblade", Armature::new);
         Joint weapon = Broadblade.get().searchJointByName("Hand_R");
         BROADBLADE_EXECUTE =
-                builder.nextAccessor("biped/broadblade/execute", (accessor) -> (new ExecuteAttackAnimation(0.1F, accessor, Armatures.BIPED, -0.25F,
+                builder.nextAccessor("biped/broadblade/execute", (accessor) -> (new ExecuteAttackAnimation(0.1F, accessor, Armatures.BIPED, -0.2F,
                         (new AttackAnimation.Phase(0.0F, (float) 90 / 60, (float) 100 /60, (float) 215 /60, (float) 120 /60, InteractionHand.MAIN_HAND, weapon,FIST)
                 .addProperty(AnimationProperty.AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.01F))
                 .addProperty(AnimationProperty.AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.0F))
@@ -87,6 +90,16 @@ public class EFN_EBroadBladeAnimations {
                                                 double targetZ = player.getZ() + dz * distance;
 
                                                 targetEntity.teleportTo(targetX, targetY, targetZ);
+                                                double dX = player.getX() - targetEntity.getX();
+                                                double dY = player.getEyeY() - targetEntity.getEyeY();
+                                                double dZ = player.getZ() - targetEntity.getZ();
+                                                double distanceToPlayer = Math.sqrt(dX * dX + dZ * dZ);
+                                                float newYaw = (float) (Math.atan2(dZ, dX) * 180.0F / Math.PI) - 90.0F;
+                                                float newPitch = (float) (-(Math.atan2(dY, distanceToPlayer) * 180.0F / Math.PI));
+                                                targetEntity.setYRot(newYaw);
+                                                targetEntity.setXRot(newPitch);
+                                                targetEntity.yRotO = newYaw;
+                                                targetEntity.xRotO = newPitch;
                                             }
                                         }, AnimationEvent.Side.SERVER))
                                 )
@@ -101,17 +114,37 @@ public class EFN_EBroadBladeAnimations {
                                         }, AnimationEvent.Side.SERVER),
                                         AnimationEvent.InTimeEvent.create(0.001F, (entityPatch, self, params) -> {
                                             entityPatch.getOriginal().addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 110, 5, false, false, false));
-                                        }, AnimationEvent.Side.SERVER),
-                                        AnimationEvent.InTimeEvent.create(0.001F, (entityPatch, self, params) -> {
+                                            entityPatch.getOriginal().addEffect(new MobEffectInstance(EFNMobEffectRegistry.KNOCKBACKRESISTANT.get(), 110, 1, false, false, false));
                                             entityPatch.getOriginal().addEffect(new MobEffectInstance(EFNMobEffectRegistry.SIN_STUN_IMMUNITY.get(), 110, 5, false, false, false));
-                                        }, AnimationEvent.Side.SERVER))
+                                        }, AnimationEvent.Side.SERVER)
+                                )
                 );
         BROADBLADE_EXECUTED =
                 builder.nextAccessor("biped/broadblade/executed", (accessor) -> new EFNStunAnimation(0.1F, Float.MAX_VALUE, accessor, Armatures.BIPED)
-                        .addEvents(AnimationEvent.InTimeEvent.create(0.0F, (entitypatch, self, params) -> {
-                            entitypatch.getOriginal()
-                                    .addEffect(new MobEffectInstance(EFNMobEffectRegistry.KNOCKBACKRESISTANT.get(), 10, 1, false, false, false));
-                        }, AnimationEvent.Side.SERVER))
+                        .addEvents(
+                                    AnimationEvent.InTimeEvent.create(0.01F, (entitypatch, self, params) -> {
+                                        entitypatch.getOriginal().addEffect(new MobEffectInstance(EFNMobEffectRegistry.KNOCKBACKRESISTANT.get(), 110, 1, false, false, false));
+                                        entitypatch.getOriginal().addEffect(new MobEffectInstance(EFNMobEffectRegistry.SIN_STUN_IMMUNITY.get(), 110, 5, false, false, false));
+                            }, AnimationEvent.Side.SERVER),
+                                AnimationEvent.InTimeEvent.create((float) 91 /60, (entitypatch, self, params) -> {
+                                    LivingEntity livingEntity = entitypatch.getOriginal();
+                                    if (livingEntity != null && !livingEntity.level().isClientSide()) {
+                                        ServerLevel serverLevel = (ServerLevel) livingEntity.level();
+                                        serverLevel.sendParticles(
+                                                EpicFightParticles.BLOOD.get(),
+                                                livingEntity.getX(),
+                                                livingEntity.getY() + livingEntity.getBbHeight() / 2.0,
+                                                livingEntity.getZ(),
+                                                166,
+                                                0.75,
+                                                0.75,
+                                                0.75,
+                                                0.3
+                                        );
+                                    }
+                                }, AnimationEvent.Side.SERVER)
+                        )
                 );
+
     }
 }
