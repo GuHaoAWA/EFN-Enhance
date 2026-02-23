@@ -7,6 +7,7 @@ import com.hm.efn.animations.types.stun.EFNStunAnimation;
 import com.hm.efn.registries.EFNMobEffectRegistry;
 import com.hm.efn.util.yamato.DMC_V_JC_Client;
 import com.hm.efn.util.yamato.DMC_V_JC_Server;
+import net.minecraft.core.BlockPos;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -48,7 +49,7 @@ public class EFN_EBroadBladeAnimations {
         BROADBLADE_EXECUTE =
                 builder.nextAccessor("biped/broadblade/execute", (accessor) -> (new ExecuteAttackAnimation(0.1F, accessor, Armatures.BIPED, -0.25F,
                         (new AttackAnimation.Phase(0.0F, (float) 90 / 60, (float) 100 /60, (float) 215 /60, (float) 120 /60, InteractionHand.MAIN_HAND, weapon,FIST)
-                .addProperty(AnimationProperty.AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.1F))
+                .addProperty(AnimationProperty.AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.01F))
                 .addProperty(AnimationProperty.AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.0F))
                 .addProperty(AnimationProperty.AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
                 .addProperty(AnimationProperty.AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER.get())
@@ -68,23 +69,29 @@ public class EFN_EBroadBladeAnimations {
                                             }
                                             LivingEntity targetEntity = ep.getTarget();
                                             LivingEntity player = ep.getOriginal();
+                                            targetEntity.addEffect(new MobEffectInstance(
+                                                    EFNEEffects.THUNDER.get(),
+                                                    100,
+                                                    0
+                                            ));
                                             if (player != null) {
                                                 double distance = 0.8;
                                                 float yaw = player.getYRot();
                                                 float pitch = player.getXRot();
+
                                                 double dx = -Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch));
                                                 double dz = Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch));
-                                                double dy = -Math.sin(Math.toRadians(pitch));
+
                                                 double targetX = player.getX() + dx * distance;
-                                                double targetY = player.getY() + player.getEyeHeight() + dy * distance;
+                                                double targetY = player.getY();
                                                 double targetZ = player.getZ() + dz * distance;
-                                                targetY = Math.max(targetY, player.getY());
+
                                                 targetEntity.teleportTo(targetX, targetY, targetZ);
                                             }
                                         }, AnimationEvent.Side.SERVER))
                                 )
                 .addProperty(AnimationProperty.AttackAnimationProperty.REACH, 0.0F).newTimePair(0.0F, 1.5F).addStateRemoveOld(EntityState.CAN_BASIC_ATTACK, false)
-                .newTimePair((float) 80 /60, Float.MAX_VALUE).addStateRemoveOld(EntityState.LOCKON_ROTATE, false).addStateRemoveOld(EntityState.TURNING_LOCKED, true)
+                .newTimePair(0.0F, Float.MAX_VALUE).addStateRemoveOld(EntityState.LOCKON_ROTATE, false).addStateRemoveOld(EntityState.TURNING_LOCKED, true)
                 .newTimePair(0.0F, 1.5F).addStateRemoveOld(EntityState.ATTACK_RESULT, INVINCIBLE_SOURCE_VALIDATOR)
                 .addProperty(AnimationProperty.AttackAnimationProperty.PLAY_SPEED_MODIFIER, Animations.ReusableSources.CONSTANT_ONE))
                                 .addEvents(
