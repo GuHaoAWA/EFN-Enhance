@@ -127,7 +127,7 @@ dependencies {
     implementation fg.deobf("curse.maven:free-cam-557076:4643128")
     implementation fg.deobf("curse.maven:flerovium-1142875:7068908")
 //    implementation fg.deobf("curse.maven:fancy-trail-1380365:7248829")
-    implementation fg.deobf('libs:Nightfall-3.0.5-all:3.0.5')
+    implementation fg.deobf('libs:Nightfall-3.0.6-all:3.0.6')
     implementation fg.deobf('libs:Fancy-Trail1.20.1-1.1.2-all:1.0')
     implementation fg.deobf('libs:epicfightx-mc1.20.1-1.1.0-all:1.1.0')
 
