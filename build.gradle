@@ -129,6 +129,7 @@ dependencies {
 //    implementation fg.deobf("curse.maven:fancy-trail-1380365:7248829")
     implementation fg.deobf('libs:Nightfall-3.0.5-all:3.0.5')
     implementation fg.deobf('libs:Fancy-Trail1.20.1-1.1.2-all:1.0')
+    implementation fg.deobf('libs:epicfightx-mc1.20.1-1.1.0-all:1.1.0')
 
 
     compileOnly(annotationProcessor("com.bawnorton.mixinsquared:mixinsquared-common:0.2.0-beta.6"))

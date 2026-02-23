@@ -62,7 +62,7 @@ public class ServerEvent {
             return;
         }
         if (entity.hasEffect(EFNEEffects.THUNDER.get())) {
-            twitchHead(entity, 15f, 15f);
+            twitchHead(entity, 3f, 3f);
         }
 
 

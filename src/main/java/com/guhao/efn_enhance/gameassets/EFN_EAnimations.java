@@ -1,6 +1,7 @@
 package com.guhao.efn_enhance.gameassets;
 
 import com.guhao.efn_enhance.EFN_E;
+import com.guhao.efn_enhance.gameassets.animations.EFN_EBroadBladeAnimations;
 import com.guhao.efn_enhance.gameassets.animations.EFN_ESekiroAnimations;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,5 +18,6 @@ public class EFN_EAnimations {
     }
     public static void build(AnimationManager.AnimationBuilder builder) {
         EFN_ESekiroAnimations.build(builder);
+        EFN_EBroadBladeAnimations.build(builder);
     }
 }
