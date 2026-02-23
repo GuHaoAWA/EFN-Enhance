@@ -68,7 +68,7 @@ description='''${mod_description}'''
 [[dependencies.${mod_id}]]
 modId="efn"
 mandatory=true
-versionRange="[3.0.5,)"
+versionRange="[3.0.6,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.${mod_id}]]
