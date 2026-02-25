@@ -221,7 +221,9 @@ public class EFN_ESekiroAnimations {
                                             step,
                                             pointOffset
                                     );
-
+                                    if (!EffekUnits.VFXENABLE()) {
+                                        return;
+                                    }
                                     Random random = new Random();
 
                                     for (int i = 0; i < 2; i++) {
@@ -768,7 +770,9 @@ public class EFN_ESekiroAnimations {
                                     );
                                 }, AnimationEvent.Side.CLIENT),
                                 AnimationEvent.InTimeEvent.create(160/60, (entityPatch, self, params) -> {
-                                    MortalBladeEffek.playMortalBlade(MortalBladeEffek.Type.LEVEL3,entityPatch.getOriginal().level,entityPatch.getOriginal().getX(),entityPatch.getOriginal().getY(),entityPatch.getOriginal().getZ(),1.2f);
+                                    if (EffekUnits.VFXENABLE()) {
+                                        MortalBladeEffek.playMortalBlade(MortalBladeEffek.Type.LEVEL3, entityPatch.getOriginal().level, entityPatch.getOriginal().getX(), entityPatch.getOriginal().getY(), entityPatch.getOriginal().getZ(), 1.2f);
+                                    }
                                 }, AnimationEvent.Side.CLIENT),
                                 mortalBladeChargeParticleTrail(24, 114,
                                         new Vec3(0, 0, 0F),
