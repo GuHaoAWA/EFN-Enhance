@@ -25,6 +25,7 @@ import com.hm.efn.util.EffekUnits;
 import com.hm.efn.util.ParticleEffectInvoker;
 import com.merlin204.avalon.util.AvalonAnimationUtils;
 import com.merlin204.avalon.util.AvalonEventUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -35,7 +36,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fml.common.Mod;
 import yesman.epicfight.api.animation.AnimationManager;
@@ -51,7 +54,6 @@ import yesman.epicfight.api.animation.types.MovementAnimation;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.collider.Collider;
 import yesman.epicfight.api.collider.MultiOBBCollider;
-import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.AttackResult;
 import yesman.epicfight.api.utils.TimePairList;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
@@ -80,7 +82,7 @@ import static com.merlin204.avalon.util.AvalonAnimationUtils.createSimplePhase;
 public class EFN_ESekiroAnimations {
     public static final Collider ROOT = new MultiOBBCollider(2, 4, 4, 4, 0.0, 0, 0.0);
     public static final Collider MORTAL_BLADE2 = new MultiOBBCollider(3, 1.5, 7, 1.5, 0.0, 21, 0.0);
-    public static final Collider SAKURA_DANCE_COLL = new MultiOBBCollider(3, 1.0, 3.0, 1.0, 0.0, 3.0, 0.0);
+    public static final Collider SAKURA_DANCE_COLL = new MultiOBBCollider(3, 1.0, 3.2, 1.0, 0.0, 3.2, 0.0);
 
     public static AnimationManager.AnimationAccessor<StaticAnimation> KUSABIMARU_IDLE;
     public static AnimationManager.AnimationAccessor<MovementAnimation> KUSABIMARU_WALK;
@@ -172,7 +174,7 @@ public class EFN_ESekiroAnimations {
                 );
         DRAGON_FLASH =
                 builder.nextAccessor("biped/sekiro/kusabimaru/dragon_flash", accessor -> new SekiroAttackAnimation(0.1F, accessor, Sekiro, 1F, 1
-                        , createSimplePhase(96, 107, 150, InteractionHand.MAIN_HAND, 4F, 1.5F, Root , ROOT))
+                        , createSimplePhase(96, 107, 150, InteractionHand.MAIN_HAND, 3.5F, 1.6F, Root , ROOT))
                         .addProperty(AnimationProperty.AttackPhaseProperty.SWING_SOUND, EFNSounds.MORTAL_BLADE_WHOOSH.get())
                         .addProperty(AnimationProperty.AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER.get())
                         .addProperty(AnimationProperty.StaticAnimationProperty.PLAY_SPEED_MODIFIER, ((dynamicAnimation, livingEntityPatch, v, v1, v2) -> 1.0F))
@@ -694,13 +696,14 @@ public class EFN_ESekiroAnimations {
                                     if (serverPlayerPatch != null) FakeManEntity.summon(serverPlayerPatch, EFNSekiroAnimations.MORTAL_BLADE_2,0.0f);
                                 }, AnimationEvent.Side.SERVER),
                                 AnimationEvent.InTimeEvent.create(0.1F, (entityPatch, self, params) -> {
-                                    entityPatch.getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 30, 10, false, false, false));
-                                }, AnimationEvent.Side.SERVER),
-                                AnimationEvent.InTimeEvent.create(0.1F, (entityPatch, self, params) -> {
+                                    entityPatch.getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 32, 10, false, false, false));
                                     entityPatch.getOriginal().addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 110, 2, false, false, false));
+                                    entityPatch.getOriginal().addEffect(new MobEffectInstance(EFNMobEffectRegistry.SIN_STUN_IMMUNITY.get(), 110, 10, false, false, false));
                                 }, AnimationEvent.Side.SERVER),
-                                AnimationEvent.InTimeEvent.create(0.1F, (entityPatch, self, params) -> {
-                                    entityPatch.getOriginal().addEffect(new MobEffectInstance(EFNMobEffectRegistry.SIN_STUN_IMMUNITY.get(), 110, 1, false, false, false));
+                                AnimationEvent.InTimeEvent.create(186/60, (entityPatch, self, params) -> {
+                                    LivingEntity livingEntity = entityPatch.getOriginal();
+                                    LivingEntity target = entityPatch.getTarget();
+                                    entityPatch.playAnimationSynchronized(DRAGON_FLASH,-1.55F);
                                 }, AnimationEvent.Side.SERVER),
                                 AnimationEvent.InTimeEvent.create(0.567F, (entityPatch, self, params) -> {
 

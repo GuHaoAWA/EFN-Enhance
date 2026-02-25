@@ -7,6 +7,7 @@ import com.hm.efn.animations.types.stun.EFNStunAnimation;
 import com.hm.efn.registries.EFNMobEffectRegistry;
 import com.hm.efn.util.yamato.DMC_V_JC_Client;
 import com.hm.efn.util.yamato.DMC_V_JC_Server;
+import com.merlin204.avalon.util.AvalonEventUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
@@ -116,7 +117,9 @@ public class EFN_EBroadBladeAnimations {
                                             entityPatch.getOriginal().addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 110, 5, false, false, false));
                                             entityPatch.getOriginal().addEffect(new MobEffectInstance(EFNMobEffectRegistry.KNOCKBACKRESISTANT.get(), 110, 1, false, false, false));
                                             entityPatch.getOriginal().addEffect(new MobEffectInstance(EFNMobEffectRegistry.SIN_STUN_IMMUNITY.get(), 110, 5, false, false, false));
-                                        }, AnimationEvent.Side.SERVER)
+                                        }, AnimationEvent.Side.SERVER),
+                                        AvalonEventUtils.simpleCameraShake(183, 20, 12, 6, 8)
+
                                 )
                 );
         BROADBLADE_EXECUTED =

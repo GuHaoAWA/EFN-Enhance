@@ -8,8 +8,11 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @SuppressWarnings("removal")
+@OnlyIn(Dist.CLIENT)
 public class RedDragonFlashFinish1Effek {
     public record Type(
             ResourceLocation effekId,
