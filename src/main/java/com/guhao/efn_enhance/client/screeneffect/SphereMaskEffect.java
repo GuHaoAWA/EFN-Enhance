@@ -81,7 +81,7 @@ public class SphereMaskEffect extends ScreenEffectBase {
 
             float progress = effect.getNormalizedAgeWithPartialTicks();
 
-            float fadeInEnd = 0.05f;
+            float fadeInEnd = 0.1f;
             float fadeOutStart = 0.95f;
             float intensity;
 
