@@ -1,22 +1,23 @@
 package com.guhao.efn_enhance.gameassets.animations;
 
+import com.guhao.efn_enhance.EFNEConfig;
+import com.guhao.efn_enhance.client.EffectController;
+import com.guhao.efn_enhance.client.screeneffect.SphereMaskEffect;
 import com.guhao.efn_enhance.gameassets.type.ExecuteAttackAnimation;
 import com.guhao.efn_enhance.register.EFNEEffects;
 import com.hm.efn.EFN;
 import com.hm.efn.animations.types.stun.EFNStunAnimation;
+import com.hm.efn.client.events.ScreenEffectEngine;
 import com.hm.efn.registries.EFNMobEffectRegistry;
-import com.hm.efn.util.yamato.DMC_V_JC_Client;
-import com.hm.efn.util.yamato.DMC_V_JC_Server;
 import com.merlin204.avalon.util.AvalonEventUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fml.common.Mod;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.api.animation.Joint;
@@ -102,7 +103,25 @@ public class EFN_EBroadBladeAnimations {
                                                 targetEntity.yRotO = newYaw;
                                                 targetEntity.xRotO = newPitch;
                                             }
-                                        }, AnimationEvent.Side.SERVER))
+                                        }, AnimationEvent.Side.SERVER),
+                                        AnimationEvent.SimpleEvent.create((ep, anim, objs) -> {
+
+                                            if (!EFNEConfig.isEffectEnabled()) {
+                                                return;
+                                            }
+                                            if (!EffectController.isAnimationEffectEnabled()) {
+                                                return; // 如果关闭了，直接返回
+                                            }
+                                            Vec3 center = ep.getOriginal().position().add(0, 1, 0);
+                                            float radius = 6f;
+
+                                            SphereMaskEffect effect = new SphereMaskEffect(
+                                                    center,
+                                                    radius
+                                            );
+                                            ScreenEffectEngine.PushScreenEffect(effect);
+                                        }, AnimationEvent.Side.CLIENT)
+                                        )
                                 )
                 .addProperty(AnimationProperty.AttackAnimationProperty.REACH, 0.0F).newTimePair(0.0F, 1.5F).addStateRemoveOld(EntityState.CAN_BASIC_ATTACK, false)
                 .newTimePair(0.0F, Float.MAX_VALUE).addStateRemoveOld(EntityState.LOCKON_ROTATE, false).addStateRemoveOld(EntityState.TURNING_LOCKED, true)

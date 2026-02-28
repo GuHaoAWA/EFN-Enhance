@@ -3,6 +3,7 @@ package com.guhao.efn_enhance;
 import com.guhao.efn_enhance.client.particles.EFNEParticles;
 import com.guhao.efn_enhance.register.EFNEEffects;
 import com.guhao.efn_enhance.register.EFNEEntity;
+import com.guhao.efn_enhance.register.EFNEPostPasses;
 import com.guhao.efn_enhance.register.EFNESounds;
 import com.mojang.logging.LogUtils;
 import net.minecraft.network.chat.Component;
@@ -15,10 +16,13 @@ import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
@@ -28,9 +32,11 @@ import java.nio.file.Path;
 public class EFN_E
 {
     public static final String MODID = "efn_enhance";
-    private static final Logger LOGGER = LogUtils.getLogger();
+
+    public static final Logger LOGGER = LogUtils.getLogger();
     public EFN_E(FMLJavaModLoadingContext context)
     {
+        context.registerConfig(ModConfig.Type.CLIENT, EFNEConfig.CLIENT_SPEC, "efn_enhance-client.toml");
         IEventBus modEventBus = context.getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::addPackFindersEvent);
@@ -38,6 +44,9 @@ public class EFN_E
         EFNEEntity.ENTITIES.register(modEventBus);
         EFNEParticles.PARTICLES.register(modEventBus);
         EFNEEffects.EFFECTS.register(modEventBus);
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            modEventBus.addListener(EFNEPostPasses::register);
+        }
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)
