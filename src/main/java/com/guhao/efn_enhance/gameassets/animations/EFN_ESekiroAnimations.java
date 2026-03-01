@@ -7,7 +7,7 @@ import com.guhao.efn_enhance.client.effek.RedDragonFlashFinish1Effek;
 import com.guhao.efn_enhance.client.effek.RedDragonFlashFinish2Effek;
 import com.guhao.efn_enhance.client.model.FakeManArmature;
 import com.guhao.efn_enhance.client.particles.EFNEParticles;
-import com.guhao.efn_enhance.effects.SparkBaEffek;
+import com.guhao.efn_enhance.client.effek.SparkBaEffek;
 import com.guhao.efn_enhance.entity.fakeman.FakeManEntity;
 import com.guhao.efn_enhance.register.EFNEEffects;
 import com.guhao.efn_enhance.register.EFNESounds;
@@ -438,7 +438,9 @@ public class EFN_ESekiroAnimations {
                         .addProperty(AnimationProperty.AttackAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0, 150F / 90F))
                         .addEvents(
                                 AnimationEvent.InTimeEvent.create(65/90F,(ep,b,c) -> {
-                                    SparkBaEffek.playSparkBa(SparkBaEffek.Type.LEVEL1,ep.getOriginal().level,ep.getOriginal().getX(),ep.getOriginal().getY() + 0.25,ep.getOriginal().getZ(),1.0f);
+                                    if (EffekUnits.VFXENABLE()) {
+                                        SparkBaEffek.playSparkBa(SparkBaEffek.Type.LEVEL1, ep.getOriginal().level, ep.getOriginal().getX(), ep.getOriginal().getY() + 0.25, ep.getOriginal().getZ(), 1.0f);
+                                    }
                                 }, AnimationEvent.Side.CLIENT),
                                 AnimationEvent.InPeriodEvent.create(70 / 90F, 113 / 90F,(ep,b,c) -> {
                                     List<LivingEntity> hitEntities = ep.getCurrentlyActuallyHitEntities();

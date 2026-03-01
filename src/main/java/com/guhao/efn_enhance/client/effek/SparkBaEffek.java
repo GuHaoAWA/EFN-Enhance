@@ -1,4 +1,4 @@
-package com.guhao.efn_enhance.effects;
+package com.guhao.efn_enhance.client.effek;
 
 import com.guhao.efn_enhance.EFN_E;
 import com.hm.efn.particle.EFNEffekParticle;
