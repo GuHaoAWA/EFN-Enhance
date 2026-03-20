@@ -442,7 +442,7 @@ public class EFN_ESekiroAnimations {
                                         SparkBaEffek.playSparkBa(SparkBaEffek.Type.LEVEL1, ep.getOriginal().level, ep.getOriginal().getX(), ep.getOriginal().getY() + 0.25, ep.getOriginal().getZ(), 1.0f);
                                     }
                                 }, AnimationEvent.Side.CLIENT),
-                                AnimationEvent.InPeriodEvent.create(70 / 90F, 113 / 90F,(ep,b,c) -> {
+                                AnimationEvent.InPeriodEvent.create(100 / 90F, 113 / 90F,(ep,b,c) -> {
                                     List<LivingEntity> hitEntities = ep.getCurrentlyActuallyHitEntities();
                                     if (hitEntities != null && !hitEntities.isEmpty()) {
                                         for (LivingEntity hitEntity : hitEntities) {
@@ -707,7 +707,7 @@ public class EFN_ESekiroAnimations {
                                     entityPatch.playAnimationSynchronized(DRAGON_FLASH,-1.55F);
                                 }, AnimationEvent.Side.SERVER),
                                 AnimationEvent.InTimeEvent.create(0.567F, (entityPatch, self, params) -> {
-
+                                    if (!EffekUnits.VFXENABLE()) return;
 
                                     Level level = entityPatch.getOriginal().level();
 
