@@ -1,14 +1,16 @@
 package com.guhao.efn_enhance.client.shaderpasses;
 
-import com.hm.efn.client.pipeline.PostEffectPipelines;
-import com.hm.efn.client.shaderpasses.PostPassBase;
+
+import com.guhao.vix.client.pipeline.PostEffectPipelines;
+import com.guhao.vix.client.shaderpasses.PostPassBase;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.io.IOException;
 
-import static com.hm.efn.client.pipeline.PostEffectPipelines.shaderOrthoMatrix;
+import static com.guhao.vix.client.pipeline.PostEffectPipelines.shaderOrthoMatrix;
+
 
 public class RedBlackContrast extends PostPassBase {
 

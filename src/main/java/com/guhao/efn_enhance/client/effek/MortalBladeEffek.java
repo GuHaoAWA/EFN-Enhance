@@ -1,7 +1,7 @@
 package com.guhao.efn_enhance.client.effek;
 
 import com.guhao.efn_enhance.EFN_E;
-import com.hm.efn.particle.EFNEffekParticle;
+import com.guhao.vix.particles.AAAEffekParticle;
 import mod.chloeprime.aaaparticles.api.common.AAALevel;
 import mod.chloeprime.aaaparticles.api.common.ParticleEmitterInfo;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -47,7 +47,7 @@ public class MortalBladeEffek {
             float radius
     ) {
         var scale = radius / type.intrinsicRadius();
-        var particle = new EFNEffekParticle(level, type.effekId(), x, y, z, dx, dy, dz);
+        var particle = new AAAEffekParticle(level, type.effekId(), x, y, z, dx, dy, dz);
         if (particle.getEmitter().isPresent()) {
             particle.getEmitter().get().setScale(scale, scale, scale);
         }

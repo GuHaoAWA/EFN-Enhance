@@ -1,8 +1,8 @@
 package com.guhao.efn_enhance.client.particles;
 
 import com.google.common.collect.Lists;
-import com.guhao.fancy_trail.client.pipeline.PostEffectPipelines;
 import com.guhao.fancy_trail.client.render.custom.BloomParticleRenderType;
+import com.guhao.vix.client.pipeline.PostEffectPipelines;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.VertexConsumer;
