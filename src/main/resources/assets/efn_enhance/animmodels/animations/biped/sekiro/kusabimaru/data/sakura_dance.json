@@ -143,19 +143,6 @@
       "interpolations": 40,
       "color": [255,255,255],
       "texture_path": "efn_enhance:effeks/white.png",
-      "particle_type": "fancy_trail:aaa_trail"
-    },
-    {
-      "start_time": 1.05,
-      "end_time": 1.26,
-      "fade_time": 0.000000000001,
-      "joint": "Tool_L",
-      "begin_pos": [0, 0.5, 0],
-      "end_pos": [0, 6.0, 0],
-      "lifetime": 10,
-      "interpolations": 40,
-      "color": [255,255,255],
-      "texture_path": "efn_enhance:effeks/white.png",
       "particle_type": "fancy_trail:after_image_trail"
     }
   ]
