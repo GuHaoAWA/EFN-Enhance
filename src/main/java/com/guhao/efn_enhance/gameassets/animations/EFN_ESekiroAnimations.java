@@ -11,6 +11,7 @@ import com.guhao.efn_enhance.client.effek.SparkBaEffek;
 import com.guhao.efn_enhance.entity.fakeman.FakeManEntity;
 import com.guhao.efn_enhance.register.EFNEEffects;
 import com.guhao.efn_enhance.register.EFNESounds;
+import com.guhao.vix.camera.VIXCameraFOV;
 import com.hm.efn.EFNClientConfig;
 import com.hm.efn.animations.types.sekiro.SekiroArtsAnimation;
 import com.hm.efn.animations.types.sekiro.SekiroAttackAnimation;
@@ -23,6 +24,7 @@ import com.hm.efn.particle.EFNParticles;
 import com.hm.efn.registries.EFNMobEffectRegistry;
 import com.hm.efn.util.EffekUnits;
 import com.hm.efn.util.ParticleEffectInvoker;
+import com.hm.efn.util.yamato.DMC_V_JC_Client;
 import com.merlin204.avalon.util.AvalonAnimationUtils;
 import com.merlin204.avalon.util.AvalonEventUtils;
 import net.minecraft.core.particles.ParticleOptions;
@@ -436,6 +438,13 @@ public class EFN_ESekiroAnimations {
                         .addProperty(AnimationProperty.AttackAnimationProperty.MOVE_VERTICAL, true)
                         .addProperty(AnimationProperty.AttackAnimationProperty.EXTRA_COLLIDERS, 5)
                         .addProperty(AnimationProperty.AttackAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0, 150F / 90F))
+                        .addProperty(AnimationProperty.StaticAnimationProperty.ON_BEGIN_EVENTS, List.of(
+                                AnimationEvent.SimpleEvent.create((ep, anim, objs) -> {
+                                    VIXCameraFOV.pulseZoom(1.5f, 60, 0.1f,
+                                            VIXCameraFOV.Easing.EASE_OUT_CUBIC,
+                                            VIXCameraFOV.Easing.EASE_IN_QUAD);
+                                }, AnimationEvent.Side.CLIENT)
+                        ))
                         .addEvents(
                                 AnimationEvent.InTimeEvent.create(65/90F,(ep,b,c) -> {
                                     if (EffekUnits.VFXENABLE()) {

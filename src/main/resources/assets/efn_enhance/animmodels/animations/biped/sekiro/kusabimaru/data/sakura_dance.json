@@ -33,6 +33,18 @@
       "particle_type": "fancy_trail:bloom_trail"
     },
     {
+      "start_time": 1.0,
+      "end_time": 1.2,
+      "joint": "Tool_L",
+      "begin_pos": [0, 0.5, 0],
+      "end_pos": [0, 6.5, 0],
+      "lifetime": 8,
+      "interpolations": 20,
+      "color": [255,255,255],
+      "texture_path": "efn_enhance:textures/trail/thunder_trail_1.png",
+      "particle_type": "fancy_trail:aaa_trail"
+    },
+    {
       "start_time": 0.3,
       "end_time": 0.5,
       "fade_time": 0.0000000001,
@@ -68,6 +80,19 @@
       "color": [255,255,255],
       "texture_path": "efn_enhance:textures/trail/thunder_trail_3.png",
       "particle_type": "fancy_trail:bloom_trail"
+    },
+    {
+      "start_time": 1.0,
+      "end_time": 1.26,
+      "fade_time": 0.0000000001,
+      "joint": "Tool_L",
+      "begin_pos": [0, 0.5, 0],
+      "end_pos": [0, 6.5, 0],
+      "lifetime": 8,
+      "interpolations": 30,
+      "color": [255,255,255],
+      "texture_path": "efn_enhance:textures/trail/thunder_trail_3.png",
+      "particle_type": "fancy_trail:aaa_trail"
     },
     {
       "start_time": 0.3,
@@ -111,6 +136,19 @@
       "end_time": 1.26,
       "fade_time": 0.0000000001,
       "joint": "Tool_L",
+      "begin_pos": [0, 6.5, 1],
+      "end_pos": [0, 6.5, -1],
+      "lifetime": 10,
+      "interpolations": 30,
+      "color": [255,255,255],
+      "texture_path": "efn_enhance:textures/trail/thunder_trail_2.png",
+      "particle_type": "fancy_trail:aaa_trail"
+    },
+    {
+      "start_time": 1.0,
+      "end_time": 1.26,
+      "fade_time": 0.0000000001,
+      "joint": "Tool_L",
       "begin_pos": [0, 0.5, 0],
       "end_pos": [0, 6.5, 0],
       "lifetime": 12,
@@ -118,6 +156,19 @@
       "color": [255,255,255],
       "texture_path": "efn_enhance:textures/trail/thunder_trail_4.png",
       "particle_type": "fancy_trail:bloom_trail"
+    },
+    {
+      "start_time": 1.0,
+      "end_time": 1.26,
+      "fade_time": 0.0000000001,
+      "joint": "Tool_L",
+      "begin_pos": [0, 0.5, 0],
+      "end_pos": [0, 6.5, 0],
+      "lifetime": 12,
+      "interpolations": 20,
+      "color": [255,255,255],
+      "texture_path": "efn_enhance:textures/trail/thunder_trail_4.png",
+      "particle_type": "fancy_trail:aaa_trail"
     },
     {
       "start_time": 1.0,

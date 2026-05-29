@@ -5,9 +5,10 @@ import com.guhao.efn_enhance.client.EffectController;
 import com.guhao.efn_enhance.client.screeneffect.SphereMaskEffect;
 import com.guhao.efn_enhance.gameassets.type.ExecuteAttackAnimation;
 import com.guhao.efn_enhance.register.EFNEEffects;
+import com.guhao.vix.camera.VIXCameraFOV;
+import com.guhao.vix.client.event.ScreenEffectEngine;
 import com.hm.efn.EFN;
 import com.hm.efn.animations.types.stun.EFNStunAnimation;
-import com.hm.efn.client.events.ScreenEffectEngine;
 import com.hm.efn.registries.EFNMobEffectRegistry;
 import com.merlin204.avalon.util.AvalonEventUtils;
 import net.minecraft.server.level.ServerLevel;
@@ -110,7 +111,7 @@ public class EFN_EBroadBladeAnimations {
                                                 return;
                                             }
                                             if (!EffectController.isAnimationEffectEnabled()) {
-                                                return; // 如果关闭了，直接返回
+                                                return;
                                             }
                                             Vec3 center = ep.getOriginal().position().add(0, 1, 0);
                                             float radius = 6f;
@@ -130,8 +131,8 @@ public class EFN_EBroadBladeAnimations {
                                 .addEvents(
 
                                         AnimationEvent.InTimeEvent.create(0.001F, (entityPatch, self, params) -> {
-
-                                        }, AnimationEvent.Side.SERVER),
+                                            VIXCameraFOV.zoomByFactor(1.5f,60, VIXCameraFOV.Easing.EASE_IN_OUT_QUAD);
+                                        }, AnimationEvent.Side.CLIENT),
                                         AnimationEvent.InTimeEvent.create(0.001F, (entityPatch, self, params) -> {
                                             entityPatch.getOriginal().addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 110, 5, false, false, false));
                                             entityPatch.getOriginal().addEffect(new MobEffectInstance(EFNMobEffectRegistry.KNOCKBACKRESISTANT.get(), 110, 1, false, false, false));

@@ -77,4 +77,9 @@ mandatory=true
 versionRange="[1.1.2,)"
 ordering="NONE"
 side="BOTH"
-
+[[dependencies.${mod_id}]]
+modId="vix"
+mandatory=true
+versionRange="[1.0.4,)"
+ordering="NONE"
+side="BOTH"
